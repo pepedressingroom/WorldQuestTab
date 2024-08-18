@@ -4,7 +4,6 @@ local _L = addon.L
 local _V = addon.variables;
 local WQT_Utils = addon.WQT_Utils;
 local WQT_Profiles = addon.WQT_Profiles;
-local ADD = LibStub("AddonDropDown-2.0");
 
 --------------------------------
 -- WQT_MiniIconMixin
@@ -345,7 +344,7 @@ function WQT_Utils:GetFactionDataInternal(id)
 	if (not factionData[id]) then
 		-- Add new faction in case it's not in our data yet
 		factionData[id] = { ["expansion"] = 0 ,["faction"] = nil ,["texture"] = 134400, ["unknown"] = true } 
-		factionData[id].name = GetFactionInfoByID(id) or UNKNOWN;
+		factionData[id].name = C_Reputation.GetFactionDataByID(id) or UNKNOWN;
 		WQT:debugPrint("Added new faction", id,factionData[id].name);
 	end
 	
@@ -374,7 +373,7 @@ function WQT_Utils:GetCachedTypeIconData(questInfo, pinVersion)
 	local tagInfo = questInfo:GetTagInfo();
 	-- If there is no tag info, it's a bonus objective
 	if (not tagInfo) then
-		return "QuestBonusObjective", 21, 21, true;
+		return "QuestBonusObjective", 28, 28, true;
 	end
 	
 	local isNew = false;
@@ -400,7 +399,7 @@ function WQT_Utils:GetCachedTypeIconData(questInfo, pinVersion)
 	end
 	
 	if (isNew) then
-		local atlasTexture, sizeX, sizeY  = QuestUtil.GetWorldQuestAtlasInfo(originalType, false, tagInfo.tradeskillLineID);
+		local atlasTexture, sizeX, sizeY  = QuestUtil.GetWorldQuestAtlasInfo(originalType, tagInfo, false);
 		cachedData.texture = atlasTexture;
 		cachedData.x = sizeX;
 		cachedData.y = sizeY;
@@ -587,7 +586,7 @@ local function _AddQuestRewardsToTooltip(tooltip, questID, style)
 	-- items
 	local showRetrievingData = false;
 	local numQuestRewards = GetNumQuestLogRewards(questID);
-	local numCurrencyRewards = GetNumQuestLogRewardCurrencies(questID);
+	local numCurrencyRewards = C_QuestLog.GetQuestRewardCurrencies(questID);
 	local showingItem = false;
 	if numQuestRewards > 0 and (not style.prioritizeCurrencyOverItem or numCurrencyRewards == 0) then
 		if style.fullItemDescription then
@@ -649,7 +648,7 @@ end
 function WQT_Utils:AddQuestRewardsToTooltip(tooltip, questID, style)
 	style = style or TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT;
 
-	if ( GetQuestLogRewardXP(questID) > 0 or GetNumQuestLogRewardCurrencies(questID) > 0 or GetNumQuestLogRewards(questID) > 0 or
+	if ( GetQuestLogRewardXP(questID) > 0 or #(C_QuestLog.GetQuestRewardCurrencies(questID)) > 0 or GetNumQuestLogRewards(questID) > 0 or
 		GetQuestLogRewardMoney(questID) > 0 or GetQuestLogRewardArtifactXP(questID) > 0 or GetQuestLogRewardHonor(questID) > 0 or
 		C_QuestInfoSystem.HasQuestRewardSpells(questID)) then
 		if tooltip.ItemTooltip then
@@ -677,7 +676,8 @@ function WQT_Utils:ShowQuestTooltip(button, questInfo, style)
 	style = style or _V["TOOLTIP_STYLES"].default;
 	WQT:ShowDebugTooltipForQuest(questInfo, button);
 	
-	GameTooltip:SetOwner(button, "ANCHOR_RIGHT");
+	GameTooltip:SetOwner(button, "ANCHOR_BOTTOMRIGHT", 26, 34);
+	--GameTooltip:SetAnchorType("ANCHOR_BOTTOMRIGHT", 26,34);
 	-- In case we somehow don't have data on this quest, even through that makes no sense at this point
 	if (not questInfo.questId or not HaveQuestData(questInfo.questId)) then
 		GameTooltip_SetTitle(GameTooltip, RETRIEVING_DATA, RED_FONT_COLOR);
@@ -706,7 +706,7 @@ function WQT_Utils:ShowQuestTooltip(button, questInfo, style)
 	
 	-- faction
 	if ( factionID ) then
-		local factionName = GetFactionInfoByID(factionID);
+		local factionName = C_Reputation.GetFactionDataByID(factionID);
 		if ( factionName ) then
 			if (capped) then
 				GameTooltip:AddLine(factionName, GRAY_FONT_COLOR:GetRGB());
@@ -943,12 +943,12 @@ function WQT_Utils:GetQuestMapLocation(questId, mapId)
 		isSameMap = mapInfo.mapID == mapId;
 	end
 	-- Threat quest specific
-	if (isSameMap and C_QuestLog.IsThreatQuest(questId)) then
-		local completed, x, y = QuestPOIGetIconInfo(questId);
-		if (x and y) then
-			return x, y;
-		end
-	end
+	--if (isSameMap and C_QuestLog.IsThreatQuest(questId)) then
+	--	local completed, x, y = QuestPOIGetIconInfo(questId);
+	--	if (x and y) then
+	--		return x, y;
+	--	end
+	--end
 	-- General tasks
 	local x, y = C_TaskQuest.GetQuestLocation(questId, mapId);
 	if (x and y) then
@@ -1160,7 +1160,8 @@ function WQT_Utils:HandleQuestClick(frame, questInfo, button)
 			playSound = false;
 		else
 			-- Context menu
-			ADD:CursorDropDown(frame, function(...) WQT:TrackDDFunc(...) end);
+			frame.questInfo = questInfo;
+			WQT:InitTrackContextMenu(frame);
 		end
 	end
 

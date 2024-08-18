@@ -427,7 +427,7 @@
 	</Frame>
 	
 	<Frame name="WQT_SettingDropDownTemplate" mixin="WQT_SettingsDropDownMixin" virtual="true">
-		<Size y="55"/>	
+		<Size y="55"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Label" inherits="GameFontNormal" maxLines="1" justifyH="LEFT">
@@ -438,6 +438,15 @@
 				</FontString>
 			</Layer>
 		</Layers>
+		<Frames>
+			<DropdownButton name="$parentDropdown" parentKey="Dropdown" inherits="WowStyle1DropdownTemplate">
+				<Size y ="25"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="35" y="5"/>
+					<Anchor point="RIGHT" x="-35" />
+				</Anchors>
+			</DropdownButton>
+		</Frames>
 		<Scripts>
 			<OnLoad method="OnLoad"/>
 		</Scripts>

@@ -146,6 +146,14 @@ local function _DeepWipeTable(t)
 	t = nil;
 end
 -- /dump WorldMapFrame:GetMapID()
+local WQT_WAR_WITHIN = {
+	[2214] =  {["x"] = 0.57, ["y"] = 0.59}, -- The Ringing Deeps
+	[2215] =  {["x"] = 0.37, ["y"] = 0.48}, -- Hallowfall
+	[2248] =  {["x"] = 0.76, ["y"] = 0.21}, -- Isle of Dorn
+	[2255] =  {["x"] = 0.46, ["y"] = 0.69}, -- Azj-Kahet
+	[2213] =  {["x"] = 0.44, ["y"] = 0.73}, -- City of Threads
+	[2339] =  {["x"] = 0.73, ["y"] = 0.25}, -- Dornogal
+}
 local WQT_DRAGONFLIGHT = {
 	[2026] =  {["x"] = 0.66, ["y"] = 0.09}, -- Forbidden Reach (dracthyr start)
 	[2151] =  {["x"] = 0.66, ["y"] = 0.09}, -- Forbidden Reach
@@ -299,7 +307,15 @@ local WQT_DRAENOR = {
 }
 
 local ZonesByExpansion = {
-	[LE_EXPANSION_DRAGONFLIGHT] = {
+	[LE_EXPANSION_WAR_WITHIN] = {
+		2274, -- Khaz Algar
+		2214, -- The Ringing Deeps
+		2215, -- Hallowfall
+		2248, -- Isle of Dorn
+		2255, -- Azj-Kahet
+		2256, -- Az-Kahet Lower
+	}
+	,[LE_EXPANSION_DRAGONFLIGHT] = {
 		1978, -- Dragon Isles
 		2026, -- Forbidden Reach (dracthyr start)
 		2151, -- Forbidden Reach
@@ -389,6 +405,7 @@ local function AddZonesToList(t)
 	end
 end
 
+AddZonesToList(WQT_WAR_WITHIN);
 AddZonesToList(WQT_DRAGONFLIGHT);
 AddZonesToList(WQT_SHADOWLANDS);
 AddZonesToList(WQT_ZANDALAR);
@@ -417,7 +434,7 @@ _DeepWipeTable(ZonesByExpansion);
 
 _V["PATH_CUSTOM_ICONS"] = "Interface/Addons/WorldQuestTab/Images/CustomIcons";
 _V["LIST_ANCHOR_TYPE"] = {["flight"] = 1, ["world"] = 2, ["full"] = 3, ["taxi"] = 4};
-_V["CURRENT_EXPANSION"] = LE_EXPANSION_DRAGONFLIGHT;
+_V["CURRENT_EXPANSION"] = LE_EXPANSION_WAR_WITHIN;
 
 _V["TOOLTIP_STYLES"] = { 
 	["default"] = {},
@@ -445,7 +462,7 @@ _V["WQT_BLUE_FONT_COLOR"] = CreateColor(0.2, 0.60, 1);
 _V["WQT_PURPLE_FONT_COLOR"] = CreateColor(0.73, 0.33, 0.82);
 
 
-_V["WQT_BOUNDYBOARD_OVERLAYID"] = 4;
+_V["WQT_BOUNDYBOARD_OVERLAYID"] = 5;
 _V["WQT_TYPE_BONUSOBJECTIVE"] = 99;
 _V["WQT_LISTITTEM_HEIGHT"] = 32;
 
@@ -563,6 +580,7 @@ _V["SETTING_CATEGORIES"] = {
 	{["id"]="DEBUG", ["label"] = "Debug"}
 	,{["id"]="PROFILES", ["label"] = _L["PROFILES"]}
 	,{["id"]="GENERAL", ["label"] = GENERAL, ["expanded"] = true}
+	,{["id"]="GENERAL_WAR_WITHIN", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME10, ["expanded"] = true}
 	,{["id"]="GENERAL_DRAGONFLIGHT", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME9, ["expanded"] = true}
 	,{["id"]="GENERAL_SHADOWLANDS", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME8, ["expanded"] = true}
 	,{["id"]="GENERAL_OLDCONTENT", ["parentCategory"] = "GENERAL", ["label"] = _L["PREVIOUS_EXPANSIONS"]}
@@ -1297,7 +1315,9 @@ _V["ZONE_SUBZONES"] = {
 }
 
 _V["WQT_ZONE_MAPCOORDS"] = {
-		[2241]	= { -- Emerald Dream flightmap
+		[2276] = WQT_WAR_WITHIN -- Khaz Algar flightmap
+		,[2274] = WQT_WAR_WITHIN -- Khaz Algar
+		,[2241]	= { -- Emerald Dream flightmap
 			[2200] = {["x"] = 0, ["y"] = 0} -- Emerald Dream
 		}
 		,[2175]	= { -- Zaralek Cavern flightmap
@@ -1407,10 +1427,24 @@ _V["WQT_FACTION_DATA"] = {
 	,[2553] =	{ ["expansion"] = LE_EXPANSION_DRAGONFLIGHT,["playerFaction"] = nil ,["texture"] = 609811 } -- Soridormi
 	,[2574] =	{ ["expansion"] = LE_EXPANSION_DRAGONFLIGHT,["playerFaction"] = nil ,["texture"] = 5244643 } -- Dream Wardens
 	,[2615] =	{ ["expansion"] = LE_EXPANSION_DRAGONFLIGHT,["playerFaction"] = nil ,["texture"] = 5315246 } -- Azerothian Archives	
+	-- LE_EXPANSION_WAR_WITHIN
+	,[2570] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5891368 } -- Hallowfall Arathi
+	,[2594] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5891367 } -- The Assembly of the Deeps
+	,[2590] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5891369 } -- Council of Dornogal
+	,[2600] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5891370 } -- The Severed Threads
+	,[2601] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5862764 } -- The Weaver
+	--,[2645] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5930319 } -- Earthen
+	,[2605] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5862762 } -- The General
+	,[2607] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5862763 } -- The Vizier
+	,[2640] =	{ ["expansion"] = LE_EXPANSION_WAR_WITHIN,["playerFaction"] = nil ,["texture"] = 5453546 } -- Brann Bronzebeard
 }
+
 -- Add localized faction names
 for k, v in pairs(_V["WQT_FACTION_DATA"]) do
-	v.name = GetFactionInfoByID(k);
+	local factionData = C_Reputation.GetFactionDataByID(k);
+	if factionData ~= nil then
+		v.name = factionData.name;
+	end
 end
 
 
@@ -1544,6 +1578,21 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2",
+			["intro"] = { "Update for 11.0.2" },
+			["new"] ={
+				"Updated to The War Within prepatch 11.0.2.",
+			},
+			["fixes"] = {
+				"Currency and rewards not displaying correctly.",
+				"Fixed TomTom context menu.",
+				"Move to new compatible APIs for quests.",
+			},
+			["changes"] = {
+				"New UI.",
+				"Removed AddonDropdown and use WoW APIs for contextmenu and dropdowns.",
+			},
+		},
 		{["version"] = "10.2.5.0",
 			["intro"] = { "Update for 10.2.5." },
 			["new"] ={

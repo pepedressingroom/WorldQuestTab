@@ -69,39 +69,27 @@ local function QuestListChangedHook(event, ...)
 	end
 end
 
-local function TrackDropDownHook(ddFrame)
-	local questInfo = ddFrame:GetSourceParent().questInfo;
-	local questId = questInfo.questId;
-	local zoneId = C_TaskQuest.GetQuestZoneID(questId);
-	local x, y = C_TaskQuest.GetQuestLocation(questId, zoneId)
-	local title = C_TaskQuest.GetQuestInfoByQuestID(questId);
-	
+local function TrackDropDownHook(owner, rootDescription)
+	local questInfo = owner.questInfo;
+	local questID = questInfo.questId;
+	local zoneId = C_TaskQuest.GetQuestZoneID(questID);
+	local x, y = C_TaskQuest.GetQuestLocation(questID, zoneId)
+	local title = C_TaskQuest.GetQuestInfoByQuestID(questID);
 	
 	-- TomTom functionality
 	if (TomTom and _activeSettings.useTomTom) then
-		local info = ddFrame:CreateButtonInfo("checkbox");
-	
-		info.keepShownOnClick = false;
-		info.text = _L["TOMTOM_PIN"];
-
-		if (TomTom.WaypointExists and TomTom.AddWaypoint and TomTom.GetKeyArgs and TomTom.RemoveWaypoint and TomTom.waypoints) then
-			info.func = function()
-				if(TomTom:WaypointExists(zoneId, x, y, title)) then
-					WQT_Utils:RemoveTomTomArrowbyQuestId(questId);
-				else
-					WQT_Utils:AddTomTomArrowByQuestId(questId);
-				end
-				ddFrame:Refresh();
-			end
-			info.checked = function() return TomTom:WaypointExists(zoneId, x, y, title) end;
-		else
-			-- Something wrong with TomTom
-			info.func = function()
-				print("Something is wrong with TomTom. Either it failed to load correctly, or an update changed its functionality.");
-			end
-		end
 		
-		ddFrame:AddButton(info);
+		local button = rootDescription:CreateCheckbox(_L["TOMTOM_PIN"],
+						function()
+							return TomTom:WaypointExists(zoneId, x, y, title);
+						end,
+						function()
+							if(TomTom:WaypointExists(zoneId, x, y, title)) then
+								WQT_Utils:RemoveTomTomArrowbyQuestId(questID);
+							else
+								WQT_Utils:AddTomTomArrowByQuestId(questID);
+							end
+						end);
 	end
 end
 

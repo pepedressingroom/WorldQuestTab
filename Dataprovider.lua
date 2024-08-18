@@ -9,7 +9,7 @@ local _L = addon.L;
 local _V = addon.variables;
 local WQT_Utils = addon.WQT_Utils;
 
-local _WFMLoaded = IsAddOnLoaded("WorldFlightMap");
+local _WFMLoaded = C_AddOns.IsAddOnLoaded("WorldFlightMap");
 local _azuriteID = C_CurrencyInfo.GetAzeriteCurrencyID();
 
 ----------------------------
@@ -192,12 +192,14 @@ function QuestInfoMixin:LoadRewards(force)
 	local haveData = HaveQuestRewardData(self.questId);
 	if (haveData) then
 		self.reward.typeBits = WQT_REWARDTYPE.none;
+		
 		-- Items
 		if (GetNumQuestLogRewards(self.questId) > 0) then
 			local _, texture, numItems, quality, _, rewardId, ilvl = GetQuestLogRewardInfo(1, self.questId);
 
 			if (rewardId) then
 				local price, typeID, subTypeID = select(11, GetItemInfo(rewardId));
+				
 				if (C_Soulbinds.IsItemConduitByItemInfo(rewardId)) then
 					-- Conduits
 					-- Lovely yikes on getting the type
@@ -249,6 +251,7 @@ function QuestInfoMixin:LoadRewards(force)
 				end
 			end
 		end
+		
 		-- Spells
 		if (C_QuestInfoSystem.HasQuestRewardSpells(self.questId)) then	
 			local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(self.questId);
@@ -261,38 +264,41 @@ function QuestInfoMixin:LoadRewards(force)
 				end
 			end
 		end
+		
 		-- Honor
 		if (GetQuestLogRewardHonor(self.questId) > 0) then
 			local numItems = GetQuestLogRewardHonor(self.questId);
 			self:AddReward(WQT_REWARDTYPE.honor, numItems, 1455894, 1, WQT_Utils:GetColor(_V["COLOR_IDS"].rewardHonor));
 		end
+		
 		-- Gold
 		if (GetQuestLogRewardMoney(self.questId) > 0) then
 			local numItems = floor(abs(GetQuestLogRewardMoney(self.questId)))
 			self:AddReward(WQT_REWARDTYPE.gold, numItems, 133784, 1, WQT_Utils:GetColor(_V["COLOR_IDS"].rewardGold));
 		end
+		
 		-- Currency
-		local numCurrencies = GetNumQuestLogRewardCurrencies(self.questId);
-		for i=1, numCurrencies do
-			local _, _, amount, currencyId = GetQuestLogRewardCurrencyInfo(i, self.questId);
-			if (currencyId) then
-				local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyId);
-				local isRep = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyId) ~= nil;
-				local name, texture, _, quality = CurrencyContainerUtil.GetCurrencyContainerInfo(currencyId, amount, currencyInfo.name, currencyInfo.iconFileID, currencyInfo.quality); 
-				local currType = currencyId == _azuriteID and WQT_REWARDTYPE.artifact or (isRep and WQT_REWARDTYPE.reputation or WQT_REWARDTYPE.currency);
+		local currencyRewards = C_QuestInfoSystem.GetQuestRewardCurrencies(self.questId);
+		for i=1, #currencyRewards do
+			local currencyInfo = currencyRewards[i];
+			if currencyInfo then
+				local currencyID = currencyInfo.currencyID;
+				local isRep = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID) ~= nil;
+				local name, texture, amount, quality = CurrencyContainerUtil.GetCurrencyContainerInfo(currencyInfo.currencyID, currencyInfo.totalRewardAmount, currencyInfo.name, currencyInfo.texture, currencyInfo.quality);
+				local currType = currencyID == _azuriteID and WQT_REWARDTYPE.artifact or (isRep and WQT_REWARDTYPE.reputation or WQT_REWARDTYPE.currency);
 				local color = currType == WQT_REWARDTYPE.artifact and WQT_Utils:GetColor(_V["COLOR_IDS"].rewardArtiface) or  WQT_Utils:GetColor(_V["COLOR_IDS"].rewardCurrency);
-				self:AddReward(currType, amount, texture, quality, color, currencyId);
+				
+				self:AddReward(currType, currencyInfo.totalRewardAmount, texture, quality, color, currencyID);
 			end
 		end
+		
 		-- Player experience 
 		if (GetQuestLogRewardXP(self.questId) > 0) then
 			local numItems = GetQuestLogRewardXP(self.questId);
 			self:AddReward(WQT_REWARDTYPE.xp, numItems, 894556, 1, WQT_Utils:GetColor(_V["COLOR_IDS"].rewardXp));
 		end
-		
 		self:ParseRewards();
 	end
-
 	self.hasRewardData = haveData;
 end
 
