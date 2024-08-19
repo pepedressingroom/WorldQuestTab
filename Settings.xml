@@ -439,11 +439,37 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<DropdownButton name="$parentDropdown" parentKey="Dropdown" inherits="WowStyle1DropdownTemplate">
-				<Size y ="25"/>
+			<Frame name="$parentContainer" parentKey="Container" inherits="SettingsDropdownWithButtonsTemplate">
+				<Size y="25"/>
 				<Anchors>
 					<Anchor point="BOTTOMLEFT" x="35" y="5"/>
 					<Anchor point="RIGHT" x="-35" />
+				</Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="WQT_SettingProfileDropDownTemplate" mixin="WQT_SettingsDropDownMixin" virtual="true">
+		<Size y="55"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Label" inherits="GameFontNormal" maxLines="1" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="30" y="-7"/>
+						<Anchor point="RIGHT" x="-15"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<DropdownButton name="$parentDropdown" parentKey="Dropdown" inherits="WowStyle1DropdownTemplate">
+				<Size y="25"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" x="30" y="5"/>
+					<Anchor point="RIGHT" x="-30" />
 				</Anchors>
 			</DropdownButton>
 		</Frames>

@@ -706,14 +706,15 @@ _V["SETTING_LIST"] = {
 			["valueChangedFunc"] = UpdateColorID, ["colorID"] = "rewardTextHonor", ["getValueFunc"] = GetColorByID
 		},
 		
-	{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "PROFILES", ["label"] = _L["CURRENT_PROFILE"], ["tooltip"] = _L["CURRENT_PROFILE_TT"], ["options"] = function() return WQT_Profiles:GetProfiles() end
+	{["template"] = "WQT_SettingProfileDropDownTemplate", ["categoryID"] = "PROFILES", ["label"] = _L["CURRENT_PROFILE"], ["tooltip"] = _L["CURRENT_PROFILE_TT"], ["options"] = function() return WQT_Profiles:GetProfiles() end
 			, ["valueChangedFunc"] = function(arg1, arg2)
-				if (arg1 == WQT_Profiles:GetActiveProfileId()) then
+				if arg1 == WQT_Profiles:GetActiveProfileId() then
 					-- Trying to load currently active profile
 					return;
 				end
-				WQT_Profiles:Load(arg1);
 				
+				-- Load by index
+				WQT_Profiles:LoadIndex(arg1);
 				WQT_WorldQuestFrame:ApplyAllSettings();
 			end
 			,["getValueFunc"] = function() return WQT_Profiles:GetIndexById(WQT.db.char.activeProfile) end
@@ -1578,6 +1579,14 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.1",
+			["changes"] = {
+				"Setting's dropdowns now look like the ones on the \"Options\" panel.",
+			},
+			["fixes"] = {
+				"Profiles now work again.",
+			},
+		},
 		{["version"] = "11.0.2",
 			["intro"] = { "Update for 11.0.2" },
 			["new"] ={

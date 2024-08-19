@@ -195,12 +195,12 @@ end
 function WQT_Profiles:LoadIndex(index)
 	local profile = _profileReferenceList[index];
 	
-	if (profile) then
+	if not profile then
 		self:LoadDefault();
 		return;
 	end
 	
-	self:Load(profile.id);
+	self:Load(profile.arg1);
 end
 
 function WQT_Profiles:LoadProfileInternal(id, profile)

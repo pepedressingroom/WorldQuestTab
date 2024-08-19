@@ -18,6 +18,12 @@ function WQT_SettingsBaseMixin:OnLoad()
 end
 
 function WQT_SettingsBaseMixin:OnEnter(anchorFrame, anchorType)
+	if self.showBigTooltip then
+		self.showBigTooltip();
+		GameTooltip:Show();
+		return;
+	end
+
 	local tooltipText = not self:IsDisabled() and self.tooltip or self.disabledTooltip;
 	if (tooltipText) then
 		GameTooltip:SetOwner(anchorFrame or self, anchorType or "ANCHOR_RIGHT");
@@ -389,10 +395,42 @@ end
 WQT_SettingsDropDownMixin = CreateFromMixins(WQT_SettingsBaseMixin);
 
 function WQT_SettingsDropDownMixin:OnLoad()
-	self.Dropdown:SetScript("OnEnter", function() self:OnEnter(self.DropDown) end);
-	self.Dropdown:SetScript("OnLeave", function() self:OnLeave() end);
+	if not self.Dropdown then
+		self.isSpecial = true; -- Custom dropdown like in settings
+		self.Dropdown = self.Container.Dropdown;
+	end
+	self.Dropdown:SetWidth(190);
+	self.Dropdown:HookScript("OnEnter", function()
+			if self.isSpecial then self:UpdateAtlas(); end
+			self:OnEnter(self.Dropdown);
+		end);
+	self.Dropdown:HookScript("OnLeave", function()
+			if self.isSpecial then self:UpdateAtlas(); end
+			self:OnLeave();
+		end);
 end
 
+function WQT_SettingsDropDownMixin:UpdateAtlas()
+	self.Dropdown.Background:SetAtlas(self:GetBackgroundAtlas(), TextureKitConstants.UseAtlasSize);
+end
+
+function WQT_SettingsDropDownMixin:GetBackgroundAtlas()
+	if self.Dropdown:IsEnabled() then
+		if self.Dropdown:IsDownOver() then
+			return "common-dropdown-c-button-pressedhover-1";
+		elseif self.Dropdown:IsOver() then
+			return "common-dropdown-c-button-hover-1";
+		elseif self.Dropdown:IsDown() then
+			return "common-dropdown-c-button-pressed-1";
+		elseif self.Dropdown:IsMenuOpen() then
+			return "common-dropdown-c-button-open";
+		else
+			return "common-dropdown-c-button";
+		end
+	end
+
+	return "common-dropdown-c-button-disabled";
+end
 
 function WQT_SettingsDropDownMixin:SetDisabled(value)
 	WQT_SettingsBaseMixin.SetDisabled(self, value);
@@ -406,15 +444,43 @@ end
 function WQT_SettingsDropDownMixin:Init(data)
 	WQT_SettingsBaseMixin.Init(self, data);
 	self.getValueFunc = data.getValueFunc;
+	
+	-- Create a tooltip with every option listed (as in WoW settings)
+	if type(data.options) == "table" and self.isSpecial then
+		self.showBigTooltip = function()
+			local tooltipText = not self:IsDisabled() and self.tooltip or self.disabledTooltip;
+			if (tooltipText) then
+				GameTooltip:SetOwner(self.Dropdown, "ANCHOR_RIGHT");
+				if (self.label) then
+					GameTooltip_SetTitle(GameTooltip, self.label);
+				end
+				GameTooltip_AddNormalLine(GameTooltip, tooltipText);
+				
+				-- Go through the options	
+				if data.options then
+					for id, displayInfo in pairs(data.options) do
+						local label = displayInfo.label or "Invalid label";
+						local combinedLine = WrapTextInColor(label..": ", HIGHLIGHT_FONT_COLOR);
+						if displayInfo.tooltip then
+							combinedLine = combinedLine..displayInfo.tooltip;
+							GameTooltip_AddNormalLine(GameTooltip, "\n"); -- New line
+							GameTooltip_AddNormalLine(GameTooltip, combinedLine);
+						end
+					end
+				end
+			end
+		end
+	end
+	
 	self.Dropdown:SetupMenu(function(dropdown, rootDescription)
 		if data.options then
 			self.options = data.options;
 			
 			local options = self.options;
-			if (type(options) ==  "function") then
+			if type(options) ==  "function" then
 				options = options();
 			end
-							
+						
 			for id, displayInfo in pairs(options) do
 				local label = displayInfo.label or "Invalid label";
 				local menu = rootDescription:CreateRadio(label,
@@ -441,6 +507,9 @@ function WQT_SettingsDropDownMixin:UpdateState()
 		if (type(options) ==  "function") then
 			options = options();
 		end
+		
+		-- Update dropdown
+		self.Dropdown:OnShow();
 	end
 end
 
