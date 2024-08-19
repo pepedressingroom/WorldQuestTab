@@ -516,14 +516,20 @@ function WQT_Utils:GetMapInfoForQuest(questId)
 end
 
 function WQT_Utils:ItterateAllBonusObjectivePins(func)
-	if(WorldMapFrame.pinPools.BonusObjectivePinTemplate) then
-		for mapPin in pairs(WorldMapFrame.pinPools.BonusObjectivePinTemplate.activeObjects) do
-			func(mapPin)
+	if WorldMapFrame.pinPools.BonusObjectivePinTemplate then
+		if WorldMapFrame.pinPools then
+			local templates = WorldMapFrame.pinPools["BonusObjectivePinTemplate"]:EnumerateActive();
+			for activePin in templates do
+				func(activePin);
+			end
 		end
 	end
-	if(WorldMapFrame.pinPools.ThreatObjectivePinTemplate) then
-		for mapPin in pairs(WorldMapFrame.pinPools.ThreatObjectivePinTemplate.activeObjects) do
-			func(mapPin)
+	if WorldMapFrame.pinPools.ThreatObjectivePinTemplate then
+		if WorldMapFrame.pinPools then
+			local templates = WorldMapFrame.pinPools["ThreatObjectivePinTemplate"]:EnumerateActive();
+			for activePin in templates do
+				func(activePin);
+			end
 		end
 	end
 end

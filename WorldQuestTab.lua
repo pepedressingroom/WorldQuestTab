@@ -340,14 +340,14 @@ local function WQT_InitFilterDropdown(self)
 		
 		-- Emissary only filter
 		rootDescription:CreateCheckbox(_L["TYPE_EMISSARY"], function()
-			return WQT.settings.general.emissaryOnly
+			return WQT.settings.general.emissaryOnly;
 		end, function()
-			WQT_WorldQuestFrame.autoEmisarryId = nil;
 			WQT.settings.general.emissaryOnly = not WQT.settings.general.emissaryOnly;
+			WQT_WorldQuestFrame.autoEmissaryId = nil;
 			WQT_QuestScrollFrame:UpdateQuestList();
 			
 			if not WQT.settings.general.emissaryOnly then
-				WQT_WorldQuestFrame.autoEmisarryId = nil;
+				WQT_WorldQuestFrame.autoEmissaryId = nil;
 			end
 		end);
 		
@@ -506,7 +506,7 @@ local function ConvertOldSettings(version)
 		WQT.db.global.general.saveFilters = 		GetNewSettingData(WQT.db.global.saveFilters, true);
 		WQT.db.global.general.emissaryOnly = 	GetNewSettingData(WQT.db.global.emissaryOnly, false);
 		WQT.db.global.general.useLFGButtons = 	GetNewSettingData(WQT.db.global.useLFGButtons, false);
-		WQT.db.global.general.autoEmisarry = 	GetNewSettingData(WQT.db.global.autoEmisarry, true);
+		WQT.db.global.general.autoEmissary = 	GetNewSettingData(WQT.db.global.autoEmissary, true);
 		WQT.db.global.general.questCounter = 	GetNewSettingData(WQT.db.global.questCounter, true);
 		WQT.db.global.general.bountyCounter = 	GetNewSettingData(WQT.db.global.bountyCounter, true);
 		WQT.db.global.general.useTomTom = 		GetNewSettingData(WQT.db.global.useTomTom, true);
@@ -756,7 +756,7 @@ function WQT:IsUsingFilterNr(id)
 end
 
 function WQT:IsFiltering()
-	if (WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmisarryId) then return true; end
+	if (WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmissaryId) then return true; end
 	if (not WQT.settings.general.showDisliked) then return true; end
 	
 	for k, category in pairs(WQT.settings.filters)do
@@ -769,9 +769,10 @@ function WQT:PassesAllFilters(questInfo)
 	-- Filter pass
 	if(WQT_Utils:QuestIsVIQ(questInfo)) then return true; end
 	
-	if (WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmisarryId) then 
-		return questInfo:IsCriteria(WQT.settings.general.bountySelectedOnly or WQT_WorldQuestFrame.autoEmisarryId);
+	if WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmissaryId then
+		return questInfo:IsCriteria(WQT.settings.general.bountySelectedOnly or WQT_WorldQuestFrame.autoEmissaryId);
 	end
+	
 	local filterTypes = _V["FILTER_TYPES"];
 
 	if (not WQT.settings.general.showDisliked and questInfo:IsDisliked()) then
@@ -1452,9 +1453,9 @@ function WQT_ScrollListMixin:UpdateFilterDisplay()
 	--WQT_WorldQuestFrame.FilterBar:SetHeight(20);
 	
 	-- Emissary has priority
-	if (WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmisarryId) then
+	if (WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmissaryId) then
 		local text = _L["TYPE_EMISSARY"]
-		if WQT_WorldQuestFrame.autoEmisarryId then
+		if WQT_WorldQuestFrame.autoEmissaryId then
 			text = GARRISON_TEMPORARY_CATEGORY_FORMAT:format(text);
 		end
 		
@@ -1862,6 +1863,7 @@ function WQT_CoreMixin:HideOfficialMapPins()
 			self:TryHideOfficialMapPin(pin);
 		end
 		
+		-- Bonus world quests
 		WQT_Utils:ItterateAllBonusObjectivePins(function(pin) self:TryHideOfficialMapPin(pin); end);
 	end
 end
@@ -2038,8 +2040,8 @@ function WQT_CoreMixin:OnLoad()
 			self:SelectTab(currentTab); 
 
 			-- If emissaryOnly was automaticaly set, and there's none in the current list, turn it off again.
-			if (WQT_WorldQuestFrame.autoEmisarryId and not WQT_WorldQuestFrame.dataProvider:ListContainsEmissary()) then
-				WQT_WorldQuestFrame.autoEmisarryId = nil;
+			if (WQT_WorldQuestFrame.autoEmissaryId and not WQT_WorldQuestFrame.dataProvider:ListContainsEmissary()) then
+				WQT_WorldQuestFrame.autoEmissaryId = nil;
 				WQT_QuestScrollFrame:UpdateQuestList();
 			end
 		end)
@@ -2116,13 +2118,14 @@ function WQT_CoreMixin:OnLoad()
 		self.worldMapFilter = worldMapFilter;
 	end
 	
-	-- Auto emisarry when clicking on one of the buttons
-	local bountyBoard = WorldMapFrame.overlayFrames[_V["WQT_BOUNDYBOARD_OVERLAYID"]];
+	-- Auto emissary filter when clicking on one of the buttons
+	local bountyBoard = WorldMapFrame.overlayFrames[_V["WQT_BOUNTYBOARD_OVERLAYID"]];
 	self.bountyBoard = bountyBoard;
 	
 	hooksecurefunc(bountyBoard, "OnTabClick", function(self, tab) 
-		if (not WQT.settings.general.autoEmisarry or tab.isEmpty or WQT.settings.general.emissaryOnly) then return; end
-		WQT_WorldQuestFrame.autoEmisarryId = bountyBoard.bounties[tab.bountyIndex];
+		if (not WQT.settings.general.autoEmissary or tab.isEmpty or WQT.settings.general.emissaryOnly) then return; end
+		WQT_WorldQuestFrame.autoEmissaryId = bountyBoard.bounties[bountyBoard.selectedBountyIndex].questID;
+		WQT_WorldQuestFrame.FilterButton:GenerateMenu(); --Update filter button
 		WQT_QuestScrollFrame:UpdateQuestList();
 	end)
 	
@@ -2242,15 +2245,16 @@ function WQT_CoreMixin:UpdateBountyCounters()
 		self.bountyInfo = {};
 	end
 	
-	-- Comment temporally, might revisit later...
-	--for tab, v in pairs(self.bountyBoard.bountyTabPool.activeObjects) do
-	--	self:AddBountyCountersToTab(tab);
-	--end
+	local templates = self.bountyBoard.bountyTabPool:EnumerateActive();
+	for activePin in templates do
+		self:AddBountyCountersToTab(activePin);
+	end
 end
 
 function WQT_CoreMixin:RepositionBountyTabs()
-	for tab, v in pairs(self.bountyBoard.bountyTabPool.activeObjects) do
-		self.bountyBoard:AnchorBountyTab(tab);
+	local templates = self.bountyBoard.bountyTabPool:EnumerateActive();
+	for activePin in templates do
+		self.bountyBoard:AnchorBountyTab(activePin);
 	end
 end
 
@@ -2330,8 +2334,8 @@ function WQT_CoreMixin:ShowHighlightOnMapFilters()
 end
 
 function WQT_CoreMixin:FilterClearButtonOnClick()
-	if WQT_WorldQuestFrame.autoEmisarryId then
-		WQT_WorldQuestFrame.autoEmisarryId = nil;
+	if WQT_WorldQuestFrame.autoEmissaryId then
+		WQT_WorldQuestFrame.autoEmissaryId = nil;
 	elseif WQT.settings.general.emissaryOnly then
 		WQT.settings.general.emissaryOnly = false;
 	else

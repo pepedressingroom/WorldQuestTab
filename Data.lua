@@ -462,7 +462,7 @@ _V["WQT_BLUE_FONT_COLOR"] = CreateColor(0.2, 0.60, 1);
 _V["WQT_PURPLE_FONT_COLOR"] = CreateColor(0.73, 0.33, 0.82);
 
 
-_V["WQT_BOUNDYBOARD_OVERLAYID"] = 5;
+_V["WQT_BOUNTYBOARD_OVERLAYID"] = 5;
 _V["WQT_TYPE_BONUSOBJECTIVE"] = 99;
 _V["WQT_LISTITTEM_HEIGHT"] = 32;
 
@@ -829,9 +829,9 @@ _V["SETTING_LIST"] = {
 			}
 	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "GENERAL_OLDCONTENT", ["label"] = _L["AUTO_EMISARRY"], ["tooltip"] = _L["AUTO_EMISARRY_TT"]
 			, ["valueChangedFunc"] = function(value) 
-				WQT.settings.general.autoEmisarry = value;
+				WQT.settings.general.autoEmissary = value;
 			end
-			,["getValueFunc"] = function() return WQT.settings.general.autoEmisarry end
+			,["getValueFunc"] = function() return WQT.settings.general.autoEmissary end
 			}	
 	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "GENERAL_OLDCONTENT", ["label"] = _L["EMISSARY_COUNTER"], ["tooltip"] = _L["EMISSARY_COUNTER_TT"]
 			, ["valueChangedFunc"] = function(value) 
@@ -1500,7 +1500,7 @@ _V["WQT_DEFAULTS"] = {
 			preciseFilters = false;
 			emissaryOnly = false;
 			useLFGButtons = false;
-			autoEmisarry = true;
+			autoEmissary = true;
 			questCounter = true;
 			bountyCounter = true;
 			bountyReward = false;
@@ -1579,6 +1579,11 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.2",
+			["fixes"] = {
+				"Trying to fix emissaries functions.",
+			},
+		},
 		{["version"] = "11.0.2.1",
 			["changes"] = {
 				"Setting's dropdowns now look like the ones on the \"Options\" panel.",

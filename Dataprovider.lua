@@ -428,7 +428,7 @@ function QuestInfoMixin:GetRewardCanUpgrade()
 end
 
 function QuestInfoMixin:IsCriteria(forceSingle)
-	local bountyBoard = WorldMapFrame.overlayFrames[_V["WQT_BOUNDYBOARD_OVERLAYID"]];
+	local bountyBoard = WorldMapFrame.overlayFrames[_V["WQT_BOUNTYBOARD_OVERLAYID"]];
 	if (not bountyBoard) then return false; end
 	
 	-- Try only selected
