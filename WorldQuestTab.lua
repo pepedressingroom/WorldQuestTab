@@ -159,7 +159,6 @@ local function WQT_InitFilterDropdown(self)
 		-- Faction, reward, and type filters
 		for k, v in pairs(WQT.settings.filters) do
 			local submenu = rootDescription:CreateButton(v.name);
-			--print(k);
 			
 			submenu:CreateButton(CHECK_ALL, function ()
 							WQT:SetAllFilterTo(k, true);
@@ -1553,12 +1552,9 @@ function WQT_ScrollListMixin:ResetLayoutIndex()
 	self.layoutIndex = 1;
 end
 
-function WQT_ScrollListMixin:DisplayQuestList()
+function WQT_ScrollListMixin:DisplayQuestList()	
 	WQT_QuestScrollFrame.worldquestsFramePool:ReleaseAll();
-	WQT_ScrollListMixin:ResetLayoutIndex();
-	
-	local currentScrollBarOffset = WQT_QuestScrollFrame:GetVerticalScroll();
-	WQT_QuestScrollFrame.ScrollBar:ScrollToBegin();
+	self:ResetLayoutIndex();
 	
 	local mapId = WorldMapFrame.mapID;
 	if (((FlightMapFrame and FlightMapFrame:IsShown()) or TaxiRouteMap:IsShown()) and not _WFMLoaded) then 
@@ -1581,6 +1577,10 @@ function WQT_ScrollListMixin:DisplayQuestList()
 		return;
 	end
 	
+	local currentScroll = WQT_QuestScrollFrame.ScrollBar:GetScrollPercentage();
+	-- Now start from zero
+	WQT_QuestScrollFrame.ScrollBar:ScrollToBegin();
+	
 	local shouldShowZone = WQT.settings.list.showZone and (WQT.settings.list.alwaysAllQuests or (mapInfo and (mapInfo.mapType == Enum.UIMapType.Continent or mapInfo.mapType == Enum.UIMapType.World))); 
 
 	self:UpdateFilterDisplay();
@@ -1593,15 +1593,16 @@ function WQT_ScrollListMixin:DisplayQuestList()
 		local offset = WQT_QuestScrollFrame:GetVerticalScroll();
 		local displayIndex = i + offset;
 		
-		WQT_ScrollListMixin:SetFrameLayoutIndex(button);
+		self:SetFrameLayoutIndex(button);
 		
 		if not self.scrollLocked then
 			button:Update(list[displayIndex], shouldShowZone);
 		end
 	end
 	
-	if currentScrollBarOffset > 0 then
-		WQT_QuestScrollFrame:SetVerticalScroll(currentScrollBarOffset);
+	-- Update scroll to current value
+	if currentScroll > 0 then
+		WQT_QuestScrollFrame.ScrollBar:SetScrollPercentage(currentScroll, true);
 	end
 	
 	if (not self.scrollLocked) then
@@ -2038,7 +2039,7 @@ function WQT_CoreMixin:OnLoad()
 				currentTab = WQT_TabNormal;
 			end
 			self:SelectTab(currentTab); 
-
+			
 			-- If emissaryOnly was automaticaly set, and there's none in the current list, turn it off again.
 			if (WQT_WorldQuestFrame.autoEmissaryId and not WQT_WorldQuestFrame.dataProvider:ListContainsEmissary()) then
 				WQT_WorldQuestFrame.autoEmissaryId = nil;

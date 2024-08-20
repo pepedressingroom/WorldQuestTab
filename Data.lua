@@ -1579,6 +1579,11 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.3",
+			["fixes"] = {
+				"Scrollbar now mantains its position.",
+			},
+		},
 		{["version"] = "11.0.2.2",
 			["fixes"] = {
 				"Trying to fix emissaries functions.",
