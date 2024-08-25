@@ -582,9 +582,9 @@ _V["SETTING_CATEGORIES"] = {
 	{["id"]="DEBUG", ["label"] = "Debug"}
 	,{["id"]="PROFILES", ["label"] = _L["PROFILES"]}
 	,{["id"]="GENERAL", ["label"] = GENERAL, ["expanded"] = true}
-	,{["id"]="GENERAL_WAR_WITHIN", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME10, ["expanded"] = true}
-	,{["id"]="GENERAL_DRAGONFLIGHT", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME9, ["expanded"] = true}
-	,{["id"]="GENERAL_SHADOWLANDS", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME8, ["expanded"] = true}
+	,{["id"]="GENERAL_WAR_WITHIN", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME10, ["expanded"] = false}
+	,{["id"]="GENERAL_DRAGONFLIGHT", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME9, ["expanded"] = false}
+	,{["id"]="GENERAL_SHADOWLANDS", ["parentCategory"] = "GENERAL", ["label"] = EXPANSION_NAME8, ["expanded"] = false}
 	,{["id"]="GENERAL_OLDCONTENT", ["parentCategory"] = "GENERAL", ["label"] = _L["PREVIOUS_EXPANSIONS"]}
 	,{["id"]="QUESTLIST", ["label"] = _L["QUEST_LIST"]}
 	,{["id"]="MAPPINS", ["label"] = _L["MAP_PINS"]}
@@ -1581,6 +1581,12 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.5",
+			["changes"] = {
+				"\"Settings\" and \"What's new\" panels now uses new scrollbars.",
+				"New Headers and Subheaders textures in Settings.",
+			},
+		},
 		{["version"] = "11.0.2.4",
 			["new"] ={
 				"Added faction based map pin icon type to settings (Map Pins -> Main Icon Type).",

@@ -381,16 +381,15 @@ local function WQT_InitSettingsDropdown(self)
 						
 		local newText = WQT.db.global.updateSeen and "" or "|TInterface\\FriendsFrame\\InformationIcon:14|t ";
 		rootDescription:CreateButton(newText .. _L["WHATS_NEW"], function()
-						local scrollFrame = WQT_VersionFrame;
-						local blockerText = scrollFrame.Text;
-						
-						blockerText:SetText(_V["LATEST_UPDATE"]);
-						blockerText:SetHeight(blockerText:GetContentHeight());
-						
-						WQT.db.global.updateSeen = true;
-						
-						WQT_WorldQuestFrame:ShowOverlayFrame(scrollFrame, 10, -18, -3, 3);
-						return;
+							local scrollFrame = WQT_VersionFrame;
+							local blockerText = scrollFrame.Text;
+							
+							blockerText:SetText(_V["LATEST_UPDATE"]);
+							
+							WQT.db.global.updateSeen = true;
+							
+							WQT_WorldQuestFrame:ShowOverlayFrame(scrollFrame);
+							return;
 						end, true);
 	end);
 	
@@ -2521,12 +2520,8 @@ function WQT_CoreMixin:SetCvarValue(flagKey, value)
 end
 
 -- Show a frame over the world quest list
-function WQT_CoreMixin:ShowOverlayFrame(frame, offsetLeft, offsetRight, offsetTop, offsetBottom)
+function WQT_CoreMixin:ShowOverlayFrame(frame)
 	if (not frame) then return end
-	offsetLeft = offsetLeft or 0;
-	offsetRight = offsetRight or 0;
-	offsetTop = offsetTop or 0;
-	offsetBottom = offsetBottom or 0;
 
 	local blocker = self.Blocker;
 	-- Hide the previous frame if any
@@ -2539,9 +2534,6 @@ function WQT_CoreMixin:ShowOverlayFrame(frame, offsetLeft, offsetRight, offsetTo
 	self:SetCustomEnabled(false);
 	
 	frame:SetParent(blocker);
-	frame:ClearAllPoints();
-	frame:SetPoint("TOPLEFT", blocker, offsetLeft, offsetTop);
-	frame:SetPoint("BOTTOMRIGHT", blocker, offsetRight, offsetBottom);
 	frame:SetFrameLevel(blocker:GetFrameLevel()+1)
 	frame:SetFrameStrata(blocker:GetFrameStrata())
 	frame:Show();

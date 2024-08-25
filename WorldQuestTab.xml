@@ -719,6 +719,7 @@
 						<Size x="304" y="454"/>
 						<Anchors>
 							<Anchor point="TOPLEFT"/>
+							<Anchor point="BOTTOMRIGHT"/>
 						</Anchors>
 					</Frame>
 				</ScrollChild>
@@ -742,18 +743,16 @@
 			
 			<Frame name="WQT_OverlayFrame" parentKey="Blocker" enableMouse="true" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" x="2" y="-35"/>
-					<Anchor point="BOTTOMRIGHT"/>
+					<Anchor point="TOPLEFT" relativeTo="QuestMapFrame" x="0" y="-29"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="QuestMapFrame" x="-22" y="9"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
-						<Texture parentKey="Bg">
-							<Color r="0" g="0" b="0" a="0.5"/>
-						</Texture>
-					</Layer>
-					<Layer level="BORDER">
-						<Texture parentKey="UpdatesBG" file="Interface/Artifacts/ArtifactForge">
-							<TexCoords left="0" right="0.8984375" top="0" bottom="0.5986328125"/>
+						<Texture parentKey="Background" atlas="QuestLog-main-background" useAtlasSize="true">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT"/>
+							</Anchors>
 						</Texture>
 					</Layer>
 				</Layers>
@@ -815,6 +814,17 @@
 								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 20);
 							</OnLoad>
 						</Scripts>
+					</Frame>
+					<Frame parentKey="BorderFrame" inherits="QuestLogBorderFrameTemplate">
+						<Layers>
+							<Layer level="BORDER">
+								<Texture parentKey="Shadow" atlas="questlog-frame-gradient-bottom" useAtlasSize="true">
+									<Anchors>
+										<Anchor point="BOTTOM" y="4"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
 					</Frame>
 				</Frames>
 			</Frame>
@@ -1213,55 +1223,20 @@
 		</Scripts>
 	</Button>
 
-	<ScrollFrame name="WQT_VersionFrame" parent="WQT_OverlayFrame" parentKey="ScrollFrame" hidden="true" inherits="HybridScrollFrameTemplate">
+	<EventScrollFrame name="WQT_VersionFrame" parent="WQT_OverlayFrame" parentKey="ScrollFrame" hidden="true" inherits="ScrollFrameTemplate">
+		<KeyValues>
+			<KeyValue key="scrollBarHideIfUnscrollable" value="false" type="boolean"/>
+			<KeyValue key="scrollBarX" value="16" type="number"/>
+			<KeyValue key="scrollBarTopY" value="2" type="number"/>
+			<KeyValue key="scrollBarBottomY" value="-4" type="number"/>
+		</KeyValues>
 		<Anchors>
-			<Anchor point="TOPLEFT" x="10" y="-3"/>
-			<Anchor point="BOTTOMRIGHT" x="-18" y="3"/>
+			<Anchor point="TOPLEFT" x="15" y="0"/>
+			<Anchor point="BOTTOMRIGHT" x="-8" y="0"/>
 		</Anchors>
-		<Frames>
-			<Slider parentKey="scrollBar">	
-				<Size x="4"/>
-				<HitRectInsets left="-5" right="-4" />
-				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="5" y="-27"/>
-					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="5" y="0"/>
-				</Anchors>
-				<Layers>
-					<Layer level="BACKGROUND">
-						<Texture name="$parentTrack" parentKey="trackBG">
-							<Anchors>
-								<Anchor point="TOPLEFT" x="0" y="0"/>
-								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
-							</Anchors>
-							<Color r="0" g="0" b="0" a="1"/>
-						</Texture>
-					</Layer>
-				</Layers>
-				<ThumbTexture name="$parentThumbTexture" inherits="HybridScrollBarButton" file="Interface\Buttons\UI-ScrollBar-Knob" parentKey="thumbTexture">
-					<Size x="18" y="24"/>
-					<TexCoords left="0.20" right="0.80" top="0.125" bottom="0.875"/>
-				</ThumbTexture>
-				<Scripts>
-					<OnValueChanged>
-						local parent = self:GetParent();
-						parent.offset = value;
-						self:GetParent().Text:SetPoint("TOPLEFT", 0, parent.offset);
-					</OnValueChanged>
-					<OnMouseWheel>
-						local parent = self:GetParent();
-						local change = delta*30;
-						parent.offset = parent.offset - change;
-						parent.offset = max(0, parent.offset);
-						parent.offset = min(parent.offset, parent.limit);
-						
-						parent.scrollBar:SetValue(parent.offset);
-					</OnMouseWheel>
-				</Scripts>
-			</Slider>
-		</Frames>
 		<ScrollChild>
 			<SimpleHTML parentKey="Text">
-				<Size x="250" y="400" />
+				<Size x="280" y="464" />
 				<FontString inherits="GameFontNormal" spacing="2" wordwrap="true"/>
 				<FontStringHeader1 inherits="Fancy24Font" spacing="5"/>
 				<FontStringHeader2 inherits="Fancy16Font" spacing="4"/>
@@ -1270,22 +1245,10 @@
 		</ScrollChild>
 		<Scripts>
 			<OnLoad>
-				self.offset = 0;
-				self.limit = max(0, self.Text:GetHeight() - self:GetHeight());
-				self.scrollBar.doNotHide = true;
-				self.scrollBar:SetMinMaxValues(0, self.limit)
-				self.scrollBar:SetValue(0);
+				ScrollFrame_OnLoad(self);
 			</OnLoad>
-			<OnMouseWheel>
-				local change = delta*30;
-				self.offset = self.offset - change;
-				self.offset = max(0, self.offset);
-				self.offset = min(self.offset, self.limit);
-				
-				self.scrollBar:SetValue(self.offset);
-			</OnMouseWheel>
 		</Scripts>
-	</ScrollFrame>
+	</EventScrollFrame>
 	
 	
  </Ui>

@@ -655,10 +655,20 @@ end
 
 function WQT_SettingsCategoryMixin:UpdateState()
 	WQT_SettingsBaseMixin.UpdateState(self);
-	if (self.isExpanded) then
-		self.ExpandIcon:SetAtlas("friendslist-categorybutton-arrow-down", true);
+	if self.isExpanded then
+		if self.SubLeft then
+			self.SubLeft:SetAtlas("campaign_headericon_open", true);
+		else
+			self.Right:SetAtlas("Options_ListExpand_Right_Expanded", true);
+			self.HighlightRight:SetAtlas("Options_ListExpand_Right_Expanded", true);
+		end
 	else
-		self.ExpandIcon:SetAtlas("friendslist-categorybutton-arrow-right", true);
+		if self.SubLeft then
+			self.SubLeft:SetAtlas("campaign_headericon_closed", true);
+		else
+			self.Right:SetAtlas("Options_ListExpand_Right", true);
+			self.HighlightRight:SetAtlas("Options_ListExpand_Right", true);
+		end
 	end
 end
 
@@ -686,6 +696,23 @@ function WQT_SettingsFrameMixin:OnLoad()
 	
 	self.bufferedSettings = {};
 	self.bufferedCategories = {};
+	
+	self.ScrollFrame:RegisterCallback("OnVerticalScroll", function(offset)
+		self:UpdateBottomShadow(offset);
+	end);
+
+	self.ScrollFrame:RegisterCallback("OnScrollRangeChanged", function(offset)
+		self:UpdateBottomShadow(offset);
+	end);
+	self:UpdateBottomShadow(0);
+end
+
+function WQT_SettingsFrameMixin:UpdateBottomShadow(offset)
+	local shadow = self:GetParent().BorderFrame.Shadow;
+	local height = shadow:GetHeight();
+	local delta = self.ScrollFrame:GetVerticalScrollRange() - self.ScrollFrame:GetVerticalScroll();
+	local alpha = Clamp(delta/height, 0, 1);
+	shadow:SetAlpha(alpha);
 end
 
 function WQT_SettingsFrameMixin:Init(categories, settings)
@@ -729,7 +756,7 @@ function WQT_SettingsFrameMixin:RegisterCategory(data)
 		return;
 	end
 	
-	category =  self:CreateCategory(data)
+	category = self:CreateCategory(data)
 	
 end
 
@@ -880,12 +907,9 @@ function WQT_SettingsFrameMixin:PlaceSetting(setting)
 	end
 	
 	self.previous = setting;
-	self.totalHeight = self.totalHeight + setting:GetHeight();
 end
 
 function WQT_SettingsFrameMixin:Refresh()
-	self.totalHeight = SETTINGS_PADDING_TOP + SETTINGS_PADDING_BOTTOM;
-
 	self.previous = nil;
 	for i = 1, #self.categoryless do
 		local current = self.categoryless[i];
@@ -893,8 +917,7 @@ function WQT_SettingsFrameMixin:Refresh()
 	end
 	
 	self:PlaceCategories(self.categories);
-	
-	self.ScrollFrame:SetChildHeight(self.totalHeight);
+	self.ScrollFrame.ScrollChild:Layout();
 end
 
 function WQT_SettingsFrameMixin:CategoryTreeHasSettings(category)

@@ -5,59 +5,48 @@
 	<Script file="Settings.lua"/>
 
 	<Button name="WQT_SettingCategoryTemplate" mixin="WQT_SettingsCategoryMixin" virtual="true">
-		<Size y="40"/>	
+		<Size y="30"/>
 		<Layers>
 			<Layer level="BORDER">
-				<Texture parentKey="BGLeft" atlas="PetJournal-BattleSlotTitle-Left" useAtlasSize="true" desaturated="true">
+				<Texture parentKey="Left" atlas="Options_ListExpand_Left" useAtlasSize="true">
 					<Anchors>
 						<Anchor point="TOPLEFT" x="3"/>
 					</Anchors>
-					<Color r="0.75" g="0.75" b="0.75"/>
 				</Texture>
-				<Texture parentKey="BGRight" atlas="PetJournal-BattleSlotTitle-Right" useAtlasSize="true" desaturated="true">
+				<Texture parentKey="Right" atlas="Options_ListExpand_Right" useAtlasSize="true">
 					<Anchors>
-						<Anchor point="TOPRIGHT" x="0"/>
+						<Anchor point="TOPRIGHT"/>
 					</Anchors>
-					<Color r="0.75" g="0.75" b="0.75"/>
 				</Texture>
-				<Texture parentKey="BGMiddle" atlas="_BattleSlotTitle-Mid" horizTile="true" desaturated="true">
+				<Texture atlas="_Options_ListExpand_Middle" horizTile="true">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.BGLeft" relativePoint="TOPRIGHT"/>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BGRight" relativePoint="BOTTOMLEFT"/>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
-					<Color r="0.75" g="0.75" b="0.75"/>
 				</Texture>
 			</Layer>
-			<Layer level="BACKGROUND">
-				<Texture parentKey="BGLeft" atlas="_BattleSlotTitle-BG" horizTile="true" desaturated="true">
+			<Layer level="OVERLAY">					
+				<FontString parentKey="Title" inherits="GameFontNormal" maxLines="1" justifyH="CENTER" text="Header">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.BGLeft" x="30" y="-7"/>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BGRight" x="-30" y="7"/>
-					</Anchors>
-					<Color r="0.75" g="0.75" b="0.75"/>
-				</Texture>
-			</Layer>
-			
-			<Layer level="ARTWORK">
-				<FontString parentKey="Title" inherits="GameFontHighlight" maxLines="1" justifyH="CENTER" text="testing">
-					<Anchors>
-						<Anchor point="LEFT" relativeKey="$parent.BGMiddle" x="15" y="1"/>
-						<Anchor point="RIGHT" relativeKey="$parent.BGMiddle" x="-15" y="1"/>
+						<Anchor point="LEFT" x="21" y="2"/>
 					</Anchors>
 				</FontString>
-				<Texture parentKey="ExpandIcon" atlas="friendslist-categorybutton-arrow-right" useAtlasSize="true" desaturated="true">
+			</Layer>
+			<Layer level="HIGHLIGHT">
+				<Texture parentKey="HighlightLeft" atlas="Options_ListExpand_Left" useAtlasSize="true" alphaMode="ADD" alpha="0.4">
 					<Anchors>
-						<Anchor point="CENTER" relativeKey="$parent.BGMiddle" relativePoint="LEFT" x="10" y="-1"/>
+						<Anchor point="TOPLEFT" x="3"/>
 					</Anchors>
 				</Texture>
-				
-			</Layer>
-			
-			<Layer level="HIGHLIGHT">
-				<Texture parentKey="Highlight" atlas="groupfinder-highlightbar-blue" alphaMode="ADD">
+				<Texture parentKey="HighlightRight" atlas="Options_ListExpand_Right" useAtlasSize="true" alphaMode="ADD" alpha="0.4">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.BGLeft" x="0" y="-1"/>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BGRight" x="-30" y="8"/>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture parentKey="HighlightMiddle" atlas="_Options_ListExpand_Middle" useAtlasSize="false" alphaMode="ADD" alpha="0.4">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" relativePoint="BOTTOMLEFT"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -76,33 +65,23 @@
 			<KeyValue key="staticLabelFont" value="true" type="boolean"/>
 		</KeyValues>
 		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture parentKey="Background" file="Interface\ACHIEVEMENTFRAME\UI-Achievement-RecentHeader" desaturated="true" alpha="0.75">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="15" y="-5"/>
-						<Anchor point="BOTTOMRIGHT" x="-20" y="5"/>
-					</Anchors>
-					<TexCoords bottom="0.75"/>
-				</Texture>
-			</Layer>
 			<Layer level="ARTWORK">
-				<FontString parentKey="Title" inherits="GameFontHighlight" maxLines="1" justifyH="CENTER">
+				<FontString parentKey="Title" inherits="GameFontHighlight" maxLines="1" justifyH="LEFT">
 					<Anchors>
-						<Anchor point="LEFT" x="15" y="2"/>
+						<Anchor point="LEFT" x="54" y="0"/>
 						<Anchor point="RIGHT" x="-15" y="2"/>
 					</Anchors>
 				</FontString>
-				<Texture parentKey="ExpandIcon" atlas="friendslist-categorybutton-arrow-right" useAtlasSize="true" desaturated="true">
+				<Texture parentKey="SubLeft" atlas="campaign_headericon_closed" useAtlasSize="true">
 					<Anchors>
-						<Anchor point="CENTER" relativePoint="LEFT" x="40" y="-1"/>
+						<Anchor point="CENTER" relativePoint="LEFT" x="38" y="-1"/>
 					</Anchors>
 				</Texture>
 			</Layer>
 			<Layer level="HIGHLIGHT">
-				<Texture parentKey="Highlight" atlas="groupfinder-highlightbar-blue" alphaMode="ADD" alpha="0.5"> <!--  -->
+				<Texture parentKey="HighlightSubLeft" file="Interface\Buttons\UI-PlusButton-Hilight" alphaMode="ADD">
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeKey="$parent.BGLeft" x="30" y="-7"/>
-						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.BGRight" x="-30" y="8"/>
+						<Anchor point="CENTER" relativePoint="LEFT" x="40" y="-1"/>
 					</Anchors>
 				</Texture>
 			</Layer>
@@ -713,14 +692,26 @@
 	</Frame>
 	
 	<Frame name="WQT_SettingsFrame" parent="WQT_OverlayFrame" mixin="WQT_SettingsFrameMixin" hidden="true">
-		<Size x="257" y="462" />
 		<Frames>
-			<ScrollFrame inherits="WQT_OverlayScrollFrameTemplate" parentKey="ScrollFrame">
+			<EventScrollFrame inherits="ScrollFrameTemplate" parentKey="ScrollFrame">
+				<KeyValues>
+					<KeyValue key="scrollBarHideIfUnscrollable" value="false" type="boolean"/>
+					<KeyValue key="scrollBarX" value="8" type="number"/>
+					<KeyValue key="scrollBarTopY" value="2" type="number"/>
+					<KeyValue key="scrollBarBottomY" value="-4" type="number"/>
+				</KeyValues>
 				<Anchors>
-					<Anchor point="TOPLEFT"/>
-					<Anchor point="BOTTOMRIGHT" x="-20"/>
+					<Anchor point="TOPLEFT" relativeTo="WQT_OverlayFrame"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="WQT_OverlayFrame"/>
 				</Anchors>
-			</ScrollFrame>
+				<ScrollChild>
+					<Frame parentKey="ScrollChild" inherits="ResizeLayoutFrame">
+						<KeyValues>
+							<KeyValue key="fixedWidth" value="304" type="number"/>
+						</KeyValues>
+					</Frame>
+				</ScrollChild>
+			</EventScrollFrame>
 		</Frames>
 		<Scripts>
 			<OnLoad method="OnLoad"/>
