@@ -561,17 +561,17 @@ function WQT_PinMixin:UpdateVisuals()
 	
 	-- Elite indicator
 	local isElite = tagInfo and tagInfo.isElite;
+	local isBoss = isElite and questQuality == Enum.WorldQuestQuality.Epic;
 	local settingEliteRing = WQT_Utils:GetSetting("pin", "eliteRing");
 	local useEliteRing = settingEliteRing and ringType ~= _V["RING_TYPES"].hide;
 	self.RingBG:SetTexture("Interface/Addons/WorldQuestTab/Images/PoIRing");
 	self.Ring:SetSwipeTexture("Interface/Addons/WorldQuestTab/Images/PoIRing");
+	
 	if (useEliteRing) then
 		self.CustomUnderlay:SetShown(false);
 		if(isElite) then
 			self.RingBG:SetTexture("Interface/Addons/WorldQuestTab/Images/PoIRingElite");
 			self.Ring:SetSwipeTexture("Interface/Addons/WorldQuestTab/Images/PoIRingElite");
-		else
-			
 		end
 	else
 		self.CustomUnderlay:SetShown(isElite);
@@ -668,20 +668,18 @@ function WQT_PinMixin:UpdateVisuals()
 		self.CustomBountyRing:SetShown(questInfo:IsCriteria(selectedBountyOnly));
 		self.CustomSelectedGlow:SetShown(showSlectedGlow);
 		if (tagInfo) then
-			if (questQuality == Enum.WorldQuestQuality.Rare) then
-				self.Icon:SetAtlas("worldquest-questmarker-rare");
-				self.CustomSelectedGlow:SetAtlas("worldquest-questmarker-rare");
-			elseif (questQuality == Enum.WorldQuestQuality.Epic) then
-				self.Icon:SetAtlas("worldquest-questmarker-epic")
-				self.CustomSelectedGlow:SetAtlas("worldquest-questmarker-epic");
+			self.Icon:SetTexture("Interface/WorldMap/UI-QuestPoi-NumberIcons");
+			if (selected) then
+				self.Icon:SetTexCoord(0.52, 0.605, 0.395, 0.48);
 			else
-				self.Icon:SetTexture("Interface/WorldMap/UI-QuestPoi-NumberIcons");
-				if (selected) then
-					self.Icon:SetTexCoord(0.52, 0.605, 0.395, 0.48);
-				else
-					self.Icon:SetTexCoord(0.895, 0.98, 0.395, 0.48);
-				end
-				self.Icon:SetScale(1.1);
+				self.Icon:SetTexCoord(0.895, 0.98, 0.395, 0.48);
+			end
+			self.Icon:SetScale(1);
+			self.CustomTypeIcon:SetSize(typeAtlasWidth, typeAtlasHeight);
+			self.CustomTypeIcon:SetScale(1);
+			if questQuality == Enum.WorldQuestQuality.Epic then
+				self.CustomTypeIcon:SetAtlas("worldquest-questmarker-epic")
+				self.CustomSelectedGlow:SetAtlas("worldquest-questmarker-epic");
 			end
 		else
 			self.Icon:SetTexture("Interface/WorldMap/UI-QuestPoi-NumberIcons");
@@ -690,13 +688,21 @@ function WQT_PinMixin:UpdateVisuals()
 		end
 		
 		-- Mimic default icon
-		local typeAtlas =  WQT_Utils:GetCachedTypeIconData(questInfo, true);
-		self.CustomTypeIcon:SetAtlas(typeAtlas);
-		self.CustomTypeIcon:SetSize(typeAtlasWidth, typeAtlasHeight);
-		self.CustomTypeIcon:SetScale(.8);
+		if isBoss then
+			self.CustomTypeIcon:SetAtlas("worldquest-icon-boss");
+		else
+			local typeAtlas = WQT_Utils:GetCachedTypeIconData(questInfo, true);
+			self.CustomTypeIcon:SetAtlas(typeAtlas);
+			self.CustomTypeIcon:SetSize(typeAtlasWidth, typeAtlasHeight);
+			self.CustomTypeIcon:SetScale(1);
+		end
 		
 		-- Add inner circle for callings
 		self.InnerGlow:SetShown(questInfo:IsQuestOfType(WQT_QUESTTYPE.calling));
+	elseif(settingCenterType == _V["PIN_CENTER_TYPES"].faction) then
+		local _, factionId = C_TaskQuest.GetQuestInfoByQuestID(questInfo.questId);
+		local factionData = WQT_Utils:GetFactionDataInternal(factionId);
+		self.Icon:SetTexture(factionData.texture);
 	elseif(settingCenterType == _V["PIN_CENTER_TYPES"].none) then
 		self.Icon:Hide();
 	end

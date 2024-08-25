@@ -1197,11 +1197,15 @@
 		<DisabledTexture file="Interface\Buttons\UI-SquareButton-Disabled"/>
 		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" alpha=".5"/>
 		<Scripts>
-	
-			<OnMouseDown function="QuestObjectiveFindGroup_OnMouseDown"/>
-			<OnMouseUp function="QuestObjectiveFindGroup_OnMouseUp"/>
-			<OnEnter function="QuestObjectiveFindGroup_OnEnter"/>
-			<OnLeave function="QuestObjectiveFindGroup_OnLeave"/>
+			<OnEnter>
+				GameTooltip:SetOwner(self);
+				GameTooltip:AddLine(TOOLTIP_TRACKER_FIND_GROUP_BUTTON, HIGHLIGHT_FONT_COLOR:GetRGB());
+
+				GameTooltip:Show();
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide();
+			</OnLeave>
 			<OnClick>
 				WQT_WorldQuestFrame:SearchGroup(self.questId);
 			</OnClick>

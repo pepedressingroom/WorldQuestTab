@@ -483,11 +483,13 @@ _V["FILTER_TYPES"] = {
 _V["PIN_CENTER_TYPES"] =	{
 	["blizzard"] = 1
 	,["reward"] = 2
+	,["faction"] = 3
 }
 
 _V["PIN_CENTER_LABELS"] ={
 	[_V["PIN_CENTER_TYPES"].blizzard] = {["label"] = _L["BLIZZARD"], ["tooltip"] = _L["PIN_BLIZZARD_TT"]} 
 	,[_V["PIN_CENTER_TYPES"].reward] = {["label"] = REWARD, ["tooltip"] = _L["PIN_REWARD_TT"]}
+	,[_V["PIN_CENTER_TYPES"].faction] = {["label"] = FACTION, ["tooltip"] = _L["PIN_FACTION_TT"]}
 }
 
 _V["RING_TYPES"] = {
@@ -806,7 +808,7 @@ _V["SETTING_LIST"] = {
 			end
 			,["getValueFunc"] = function() return WQT.settings.list.includeDaily end
 			}
-	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "GENERAL_DRAGONFLIGHT", ["label"] = _L["GOLD_PURSES"], ["tooltip"] = _L["GOLD_PURSES_TT"], ["isNew"] = true
+	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "GENERAL_DRAGONFLIGHT", ["label"] = _L["GOLD_PURSES"], ["tooltip"] = _L["GOLD_PURSES_TT"]
 			, ["valueChangedFunc"] = function(value)
 				WQT.settings.general.df_goldPurses = value;
 				WQT_WorldQuestFrame.dataProvider:ReloadQuestRewards();
@@ -967,7 +969,7 @@ _V["SETTING_LIST"] = {
 			,["getValueFunc"] = function() return WQT.settings.pin.scale end
 			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
 			}
-	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_CENTER"], ["tooltip"] = _L["PIN_CENTER_TT"], ["options"] = _V["PIN_CENTER_LABELS"]
+	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_CENTER"], ["tooltip"] = _L["PIN_CENTER_TT"], ["isNew"] = true, ["options"] = _V["PIN_CENTER_LABELS"]
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.pin.centerType = value;
 				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
@@ -991,7 +993,7 @@ _V["SETTING_LIST"] = {
 			,["getValueFunc"] = function() return WQT.settings.pin.zoneVisible end
 			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
 			}
-	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_VISIBILITY_CONTINENT"], ["tooltip"] = _L["PIN_VISIBILITY_CONTINENT_TT"], ["options"] = _V["PIN_VISIBILITY_CONTINENT"], ["isNew"] = true
+	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_VISIBILITY_CONTINENT"], ["tooltip"] = _L["PIN_VISIBILITY_CONTINENT_TT"], ["options"] = _V["PIN_VISIBILITY_CONTINENT"]
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.pin.continentVisible = value;
 				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
@@ -1579,6 +1581,16 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.4",
+			["new"] ={
+				"Added faction based map pin icon type to settings (Map Pins -> Main Icon Type).",
+			},
+			["fixes"] = {
+				"Error when talking to a flight master.",
+				"LFG button on world quests now works as intended.",
+				"Some boss icons were missing.",
+			},
+		},
 		{["version"] = "11.0.2.3",
 			["fixes"] = {
 				"Scrollbar now mantains its position.",

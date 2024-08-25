@@ -920,8 +920,7 @@ function WQT:OnEnable()
 	-- Add LFG buttons to objective tracker
 	if self.settings.general.useLFGButtons then
 		WQT_WorldQuestFrame.LFGButtonPool = CreateFramePool("BUTTON", nil, "WQT_LFGEyeButtonTemplate");
-	
-		hooksecurefunc("ObjectiveTracker_AddBlock", function(block)
+		hooksecurefunc(WorldQuestObjectiveTracker, "SetUpQuestBlock", function(owner, block)
 				local questID = block.id;
 				if (not questID) then return; end
 				
@@ -932,13 +931,13 @@ function WQT:OnEnable()
 				end
 				
 				if (not (block.groupFinderButton) and QuestUtils_IsQuestWorldQuest(questID)) then
-					if (WQT_WorldQuestFrame:ShouldAllowLFG(questID)) then
+					if (WQT_WorldQuestFrame:ShouldAllowLFG(questID)) and not block.rightEdgeFrame then
 						local button = WQT_WorldQuestFrame.LFGButtonPool:Acquire();
 						button.questId = questID;
 						button:SetParent(block);
 						button:ClearAllPoints();
-						local offsetX = (block.rightButton or block.itemButton) and -18 or 11; 
-						button:SetPoint("TOPRIGHT", block, offsetX, 4);
+						local offsetX = (block.rightButton or block.itemButton) and -13 or 6; 
+						button:SetPoint("TOPRIGHT", block, offsetX, 2);
 						button:Show();
 						block.WQTButton = button;
 					end
@@ -2412,16 +2411,18 @@ function WQT_CoreMixin:ADDON_LOADED(loaded)
 		-- I'd rather not do it this way but the Flight map pins update so much I might as well
 		local flightWQProvider = WQT_Utils:GetFlightWQProvider();
 		hooksecurefunc(flightWQProvider, "AddWorldQuest", function(frame, info) 
-				local pool = FlightMapFrame.pinPools[FlightMap_WorldQuestDataProviderMixin:GetPinTemplate()];
-				if (not pool) then return; end
-				for pin in pairs(pool.activeObjects) do
-					if (not pin.WQTHooked) then
-						pin.WQTHooked = true;
-						pin:HookScript("OnShow", function() 
-							self:TryHideOfficialMapPin(pin) 
-						end);
+				local flightMapTemplate = FlightMapFrame.pinPools[FlightMap_WorldQuestDataProviderMixin:GetPinTemplate()];
+				if flightMapTemplate then
+					local pool = flightMapTemplate:EnumerateActive();
+					for pin in pool do
+						if not pin.WQTHooked then
+							pin.WQTHooked = true;
+							pin:HookScript("OnShow", function() 
+								self:TryHideOfficialMapPin(pin);
+							end);
+						end
 					end
-				end	
+				end
 			end);
 		
 		WQT_FlightMapContainer:SetParent(FlightMapFrame);
