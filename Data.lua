@@ -1581,6 +1581,11 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.6",
+			["changes"] = {
+				"Updated sliders on Settings.",
+			},
+		},
 		{["version"] = "11.0.2.5",
 			["changes"] = {
 				"\"Settings\" and \"What's new\" panels now uses new scrollbars.",

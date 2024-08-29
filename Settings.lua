@@ -234,13 +234,34 @@ WQT_SettingsSliderMixin = CreateFromMixins(WQT_SettingsBaseMixin);
 
 function WQT_SettingsSliderMixin:Init(data)
 	WQT_SettingsBaseMixin.Init(self, data);
+	
 	self.getValueFunc = data.getValueFunc;
 	self.min = data.min or 0;
 	self.max = data.max or 1;
-	self.Slider:SetMinMaxValues(self.min, self.max);
-	self.Slider:SetValueStep(data.valueStep);
-	self.Slider:SetObeyStepOnDrag(data.valueStep and true or false)
+	
+	self.SettingSlider.Slider:SetMinMaxValues(self.min, self.max);
+	self.SettingSlider.Slider:SetValueStep(data.valueStep);
+	self.SettingSlider.Slider:SetObeyStepOnDrag(data.valueStep and true or false)
+	self.SettingSlider.Slider:HookScript("OnEnter", function(self) self:GetParent():GetParent():OnEnter(self); end);
+	self.SettingSlider.Slider:HookScript("OnLeave", function(self) self:GetParent():GetParent():OnLeave(); end);
+	self.SettingSlider.Slider:HookScript("OnValueChanged", function(self, value, userInput) self:GetParent():GetParent():OnValueChanged(value, userInput); end);
+	self.SettingSlider.Back:HookScript("OnClick", function(owner) self:OnStepperClicked(false); end);
+	self.SettingSlider.Forward:HookScript("OnClick", function(owner) self:OnStepperClicked(true); end);
+	
 	self:UpdateState();
+end
+
+function WQT_SettingsSliderMixin:OnStepperClicked(forward)
+	local value = self.SettingSlider.Slider:GetValue();
+	local step = self.SettingSlider.Slider:GetValueStep();
+	if forward then
+		self.SettingSlider.Slider:SetValue(value + step, true);
+	else
+		self.SettingSlider.Slider:SetValue(value - step, true);
+	end
+	
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+	self:OnValueChanged(self.SettingSlider.Slider:GetValue(), true);
 end
 
 function WQT_SettingsSliderMixin:Reset()
@@ -251,7 +272,7 @@ function WQT_SettingsSliderMixin:UpdateState()
 	WQT_SettingsBaseMixin.UpdateState(self);
 	if (self.getValueFunc) then
 		local currentValue = self.getValueFunc();
-		self.Slider:SetValue(currentValue);
+		self.SettingSlider.Slider:SetValue(currentValue);
 		self.TextBox:SetText(Round(currentValue*100)/100);
 		self.current = currentValue;
 	end
@@ -260,10 +281,10 @@ end
 function WQT_SettingsSliderMixin:SetDisabled(value)
 	WQT_SettingsBaseMixin.SetDisabled(self, value);
 	if (value) then
-		self.Slider:Disable();
+		self.SettingSlider.Slider:Disable();
 		self.TextBox:Disable();
 	else
-		self.Slider:Enable();
+		self.SettingSlider.Slider:Enable();
 		self.TextBox:Enable();
 	end
 end

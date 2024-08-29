@@ -167,7 +167,7 @@
 	</Frame>
 	
 	<Frame name="WQT_SettingSliderTemplate" mixin="WQT_SettingsSliderMixin" virtual="true">
-		<Size y="47"/>	
+		<Size y="47"/>
 		<Layers>
 			<Layer level="ARTWORK">
 				<FontString parentKey="Label" inherits="GameFontNormal" maxLines="1" justifyH="LEFT">
@@ -179,30 +179,18 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Slider parentKey="Slider" inherits="UISliderTemplate">
-				<Size y="17"/>
+			<Frame parentKey="SettingSlider" inherits="MinimalSliderWithSteppersTemplate">
 				<Anchors>
-					<Anchor point="BOTTOMLEFT" x="30" y="5"/>
-					<Anchor point="RIGHT" x="-75"/>
+					<Anchor point="BOTTOMLEFT" x="24" y="-6"/>
+					<Anchor point="RIGHT" x="-45"/>
 				</Anchors>
-				<Scripts>
-					<OnEnter>
-						self:GetParent():OnEnter(self);
-					</OnEnter>
-					<OnLeave>
-						self:GetParent():OnLeave();
-					</OnLeave>
-					<OnValueChanged>
-						self:GetParent():OnValueChanged(value, userInput);
-					</OnValueChanged>
-				</Scripts>
-			</Slider>
+			</Frame>
 			<EditBox parentKey="TextBox" inherits="InputBoxTemplate" autoFocus="false">
 				<Size x="30" y="20"/>
 				<HitRectInsets left="-10"/>
 				<Anchors>
-					<Anchor point="LEFT" relativeKey="$parent.Slider" relativePoint="RIGHT" x="10" y="1"/>
-					<Anchor point="RIGHT" x="-35" y="1"/>
+					<Anchor point="LEFT" relativeKey="$parent.Slider" relativePoint="RIGHT" x="-10" y="-9"/>
+					<Anchor point="RIGHT" x="-42" y="1"/>
 				</Anchors>
 				<FontString inherits="NumberFont_Shadow_Small"/>
 				<Scripts>
@@ -221,7 +209,6 @@
 				</Scripts>
 			</EditBox>
 		</Frames>
-		
 	</Frame>
 	
 	<Frame name="WQT_SettingSubTitleTemplate" mixin="WQT_SettingsBaseMixin" virtual="true">
