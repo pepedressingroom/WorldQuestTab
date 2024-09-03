@@ -165,7 +165,7 @@
 	</Button>
 	
 	<Frame name="WQT_ContainerTemplate" virtual="true" inherits="BackdropTemplate">
-		<Size x="296.5" y="518"/>
+		<Size x="345" y="518"/>
 		<Scripts>
 			<OnLoad>
 				self:SetBackdrop({

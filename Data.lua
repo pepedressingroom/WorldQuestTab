@@ -1581,6 +1581,12 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.7",
+			["fixes"] = {
+				"Fixed fullscreen worldmap panel.",
+				"Fixed glitch when clicking the \"Map legend\" button.",
+			},
+		},
 		{["version"] = "11.0.2.6",
 			["changes"] = {
 				"Updated sliders on Settings.",

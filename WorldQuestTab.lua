@@ -2025,6 +2025,22 @@ function WQT_CoreMixin:OnLoad()
 			end
 		end);
 	
+	-- Clicking the map legend, hide & change to quest tab
+	EventRegistry:RegisterCallback("ShowMapLegend", function()
+		self.isMapLegend = true;
+		self:SelectTab(WQT_TabNormal);
+		WQT_WorldQuestFrame:ChangeAnchorLocation(_V["LIST_ANCHOR_TYPE"].world);
+		WQT_TabNormal:Hide();
+		WQT_TabWorld:Hide();
+		QuestMapFrame.QuestsFrame.SearchBox:Hide(); -- ???
+	end);
+	EventRegistry:RegisterCallback("HideMapLegend", function()
+		self.isMapLegend = false;
+		self:SelectTab(WQT_TabNormal);
+		WQT_WorldQuestFrame:ChangeAnchorLocation(_V["LIST_ANCHOR_TYPE"].world);
+		QuestMapFrame.QuestsFrame.SearchBox:Show();
+	end);
+	
 	-- Update when opening the map
 	WorldMapFrame:HookScript("OnShow", function() 
 			local mapAreaID = WorldMapFrame.mapID;
@@ -2594,9 +2610,10 @@ function WQT_CoreMixin:SelectTab(tab)
 		WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
 	end
 	self.selectedTab = tab;
-	
-	WQT_TabNormal:Show();
-	WQT_TabWorld:Show();
+	if not self.isMapLegend then
+		WQT_TabNormal:Show();
+		WQT_TabWorld:Show();
+	end
 	WQT_TabNormal:SetFrameLevel(2);
 	WQT_TabWorld:SetFrameLevel(2);
 	WQT_TabNormal.Hider:Show();
@@ -2677,7 +2694,6 @@ function WQT_CoreMixin:ChangeAnchorLocation(anchor)
 		WQT_WorldMapContainer:Hide();
 		WQT_WorldMapContainerButton:Hide();
 		
-		--WQT_WorldQuestFrame:SetHeight();
 		WQT_WorldQuestFrame:ClearAllPoints(); 
 		WQT_WorldQuestFrame:SetParent(parent);
 		WQT_WorldQuestFrame:SetPoint("TOPLEFT", QuestMapFrame, -3, 7);
@@ -2693,13 +2709,21 @@ function WQT_CoreMixin:ChangeAnchorLocation(anchor)
 		WQT_WorldQuestFrame:SetFrameLevel(WQT_WorldMapContainer:GetFrameLevel()+2);
 		WQT_WorldMapContainerButton:Show();
 		WQT_WorldMapContainer:SetShown(WQT_WorldMapContainerButton.isSelected);
+		
+		WQT_WorldQuestFrame:ClearAllPoints();
+		WQT_WorldQuestFrame:SetParent(parent);
+		WQT_WorldQuestFrame:SetPoint("TOPLEFT", parent, 3, -10);
+		WQT_WorldQuestFrame:SetPoint("BOTTOMRIGHT", parent, -8, 3);
+		WQT_WorldQuestFrame:SelectTab(tab);
+		
+		WQT_WorldQuestFrame:TriggerCallback("AnchorChanged", anchor);
+		return
 	end
 
-	WQT_WorldQuestFrame:ClearAllPoints(); 
-	WQT_WorldQuestFrame:SetPoint(point, parent, point, xOffset, yOffset);
+	WQT_WorldQuestFrame:ClearAllPoints();
 	WQT_WorldQuestFrame:SetParent(parent);
+	WQT_WorldQuestFrame:SetPoint(point, parent, point, xOffset, yOffset);
 	WQT_WorldQuestFrame:SelectTab(tab);
-	
 	WQT_WorldQuestFrame:TriggerCallback("AnchorChanged", anchor);
 end
 

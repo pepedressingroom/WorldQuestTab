@@ -567,9 +567,8 @@
 	<!--
 		Main frame
 	-->
-	 
 	<Frame name="WQT_WorldQuestFrame" mixin="WQT_CoreMixin" parent="QuestMapFrame" enableMouse="true" hidden="false">
-		<Size x="300" y="0"/>
+		<Size x="300"/>
 		<Frames>
 			<Cooldown parentKey="ProgressBar" hideCountdownNumbers="true" reverse="true">
 				<Size x="32" y="32"/>
@@ -681,8 +680,8 @@
 				</KeyValues>
 				<Size x="304" y="463"/>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="QuestMapFrame" x="0" y="-29"/>
-					<Anchor point="BOTTOMRIGHT" relativeTo="QuestMapFrame" x="-22" y="9"/>
+					<Anchor point="TOPLEFT" x="3" y="-36"/>
+					<Anchor point="BOTTOMRIGHT" x="-22" y="9"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
@@ -743,8 +742,8 @@
 			
 			<Frame name="WQT_OverlayFrame" parentKey="Blocker" enableMouse="true" hidden="true">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="QuestMapFrame" x="0" y="-29"/>
-					<Anchor point="BOTTOMRIGHT" relativeTo="QuestMapFrame" x="-22" y="9"/>
+					<Anchor point="TOPLEFT" x="3" y="-36"/>
+					<Anchor point="BOTTOMRIGHT" x="-22" y="9"/>
 				</Anchors>
 				<Layers>
 					<Layer level="BACKGROUND">
