@@ -895,6 +895,7 @@ function WQT:OnEnable()
 	-- Place fullscreen button in saved location
 	WQT_WorldMapContainerButton:LinkSettings(WQT.settings.general.fullScreenButtonPos);
 	WQT_WorldMapContainer:LinkSettings(WQT.settings.general.fullScreenContainerPos);
+	WQT_WorldQuestFrame:UpdateWorldMapButton();
 	
 	-- Apply saved filters
 	if (not self.settings.general.saveFilters) then
@@ -965,7 +966,7 @@ function WQT:OnEnable()
 
 	wipe(_V["SETTING_LIST"]);
 	
-		
+	
 	-- Create Filter dropdown
 	WQT_InitFilterDropdown(WQT_WorldQuestFrame.FilterButton);
 	
@@ -1712,7 +1713,11 @@ function WQT_ConstrainedChildMixin:OnLoad(anchor)
 	self.firstSetup = true;
 end
 
-function WQT_ConstrainedChildMixin:OnDragStart()		
+function WQT_ConstrainedChildMixin:OnDragStart()
+	if not self:IsMovable() then
+		return;
+	end
+	
 	self:StartMoving();
 	local scale = self:GetEffectiveScale();
 	local fx = self:GetLeft();
@@ -1832,6 +1837,7 @@ end
 -- UpdateBountyCounters()
 -- RepositionBountyTabs()
 -- AddBountyCountersToTab(tab)
+-- UpdateWorldMapButton()
 -- ShowHighlightOnMapFilters()
 -- FilterClearButtonOnClick()
 -- SearchGroup(questInfo)
@@ -2059,6 +2065,12 @@ function WQT_CoreMixin:OnLoad()
 				WQT_WorldQuestFrame.autoEmissaryId = nil;
 				WQT_QuestScrollFrame:UpdateQuestList();
 			end
+			
+			-- Update worldquest button on first open, other addons might have added buttons...
+			if not self.worldMapButtonSet then
+				WQT_WorldQuestFrame:UpdateWorldMapButton();
+				self.worldMapButtonSet = true;
+			end
 		end)
 
 	-- Wipe data when hiding map
@@ -2250,6 +2262,7 @@ function WQT_CoreMixin:ApplyAllSettings()
 	WQT:Sort_OnClick(nil, WQT.settings.general.sortBy);
 	WQT_WorldMapContainerButton:LinkSettings(WQT.settings.general.fullScreenButtonPos);
 	WQT_WorldMapContainer:LinkSettings(WQT.settings.general.fullScreenContainerPos);
+	WQT_WorldQuestFrame:UpdateWorldMapButton();
 end
 
 function WQT_CoreMixin:UpdateBountyCounters()
@@ -2334,6 +2347,37 @@ function WQT_CoreMixin:AddBountyCountersToTab(tab)
 		end
 	end
 	
+end
+
+function WQT_CoreMixin:UpdateWorldMapButton()
+	local alignButton = WQT.settings.general.alignWorldMapButton;
+	if alignButton then
+		-- Get all the frames
+		local frames = {WorldMapFrame:GetChildren();}
+		local framesCount = WorldMapFrame:GetNumChildren();
+		if framesCount > 0 then
+			local topRightButtonPoolXOffset = -4;
+			local topRightButtonPoolXOffsetAmount = -32;
+			
+			for i, frame in ipairs(frames) do
+				if frame:GetObjectType() == "Button" then
+					local point, relativeTo, relativePoint, offsetX, offsetY = frame:GetPoint(1);
+					
+					-- Iterate through the top right buttons
+					if offsetY == -2 and offsetX == topRightButtonPoolXOffset then
+						topRightButtonPoolXOffset = topRightButtonPoolXOffset + topRightButtonPoolXOffsetAmount;
+					end
+				end
+			end
+			
+			WQT_WorldMapContainerButton:ClearAllPoints();
+			WQT_WorldMapContainerButton:SetMovable(false);
+			WQT_WorldMapContainerButton:SetPoint("TOPRIGHT", WorldMapFrame.ScrollContainer, "TOPRIGHT", topRightButtonPoolXOffset, -2);
+		end
+	else
+		WQT_WorldMapContainerButton:SetMovable(true);
+		WQT_WorldMapContainerButton:LinkSettings(WQT.settings.general.fullScreenButtonPos);
+	end
 end
 
 function WQT_CoreMixin:ShowHighlightOnMapFilters()

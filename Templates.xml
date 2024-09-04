@@ -118,49 +118,72 @@
 	-->
 	
 	<Button name="WQT_ContainerButtonTemplate" mixin="WQT_ContainerButtonMixin" virtual="true">
-		<Size x="36" y="36"/> 
+		<Size x="32" y="32"/> 
 		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="-1">
+				<Texture atlas="MapCornerShadow-Right" useAtlasSize="true" hidden="true">
+					<Anchors>
+						<Anchor point="TOPRIGHT" x="4" y="1"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="1" bottom="0"/>
+				</Texture>
+			</Layer>
 			<Layer level="BACKGROUND">
-				<Texture parentKey="Background" file="Interface/MINIMAP/UI-Minimap-Background" >
-					<Color r="1" g="1" b="1" a="1"/>
-				</Texture>
-			</Layer>
-			<Layer level="ARTWORK" textureSubLevel="-2">
-				<Texture parentKey="Border" atlas="Capacitance-General-PortraitRing">
+				<Texture parentKey="Background" file="Interface\Minimap\UI-Minimap-Background">
+					<Size x="25" y="25"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="-3" y="1"/>
-						<Anchor point="BOTTOMRIGHT" x="4" y="-7"/>
+						<Anchor point="TOPLEFT" x="3" y="-4"/>
 					</Anchors>
 				</Texture>
 			</Layer>
-			<Layer level="ARTWORK" textureSubLevel="-1">
-				<Texture parentKey="Selected" file="Interface/ENCOUNTERJOURNAL/UI-EncounterJournalTextures" alphaMode="ADD" alpha="0">
+			<Layer level="ARTWORK">
+				<Texture parentKey="Icon" file="Interface/Worldmap/UI-World-Icon">
+					<Size x="20" y="20"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="0" y="-0"/>
-						<Anchor point="BOTTOMRIGHT" x="-0" y="0"/>
+						<Anchor point="TOPLEFT" x="7" y="-6"/>
 					</Anchors>
-					<TexCoords left="0.828125" right="0.921875" top="0.337890625" bottom="0.3857421875"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture parentKey="IconOverlay" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Icon"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
+					</Anchors>
+					<Color r="0.0" g="0.0" b="0.0" a="0.3"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="1">
+				<Texture parentKey="Border" file="Interface\Minimap\MiniMap-TrackingBorder">
+					<Size x="54" y="54"/>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY" textureSubLevel="2">
+				<Texture parentKey="ActiveTexture" file="Interface\Minimap\UI-Minimap-ZoomButton-Toggle" alphaMode="ADD" hidden="true">
+					<Size x="37" y="37"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Border" x="-2" y="1"/>
+					</Anchors>					
+				</Texture>
+                <Texture parentKey="Glow" file="Interface\Minimap\UI-Minimap-ZoomButton-Toggle" alphaMode="ADD">
+                    <Size x="37" y="37"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Border" x="-2" y="1"/>
+					</Anchors>
 				</Texture>
 			</Layer>
 		</Layers>
-		<NormalTexture file="Interface/Worldmap/UI-World-Icon">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="4" y="-4"/>
-				<Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
-			</Anchors>
-		</NormalTexture>
-		<PushedTexture file="Interface/Worldmap/UI-World-Icon">
-			<Anchors>
-				<Anchor point="TOPLEFT" x="5" y="-5"/>
-				<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
-			</Anchors>
-		</PushedTexture>
-		<HighlightTexture file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD" alpha=".5"/>
-		
+		<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
 		<Scripts>
 			<OnClick method="OnClick"/>
+            <OnShow method="OnShow"/>
 			<OnEnter method="OnEnter"/>
 			<OnLeave method="OnLeave"/>
+			<OnMouseUp method="OnMouseUp"/>
+			<OnMouseDown method="OnMouseDown"/>
 		</Scripts>
 	</Button>
 	

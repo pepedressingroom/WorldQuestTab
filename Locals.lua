@@ -5,6 +5,8 @@ local locale = GetLocale();
 
 L["IS_AZIAN_CLIENT"]	= false
 
+L["ALIGN_WORLDMAP_BUTTON"] = "Align World Map Button"
+L["ALIGN_WORLDMAP_BUTTON_TT"] = "Puts the button alongside the default ones."
 L["ALWAYS_ALL"] = "Always All Quests"
 L["ALWAYS_ALL_TT"] = "Always show all quests for the expansion related to the current zone"
 L["AMOUNT_COLORS"] = "Amount Colors"

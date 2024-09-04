@@ -159,16 +159,20 @@ function WQT_ContainerButtonMixin:OnClick()
 	self:SetSelected(not self.isSelected);
 end
 
+function WQT_ContainerButtonMixin:OnShow()
+	self.Glow:SetShown(false);
+end
+
 function WQT_ContainerButtonMixin:SetSelected(isSelected)
 	self.isSelected = isSelected;	
 	if (self.container) then
 		if (self.isSelected) then
 			self.container:Show();
-			self.Selected:SetAlpha(0.5);
+			self.Glow:SetShown(true);
 			WQT_WorldQuestFrame:SelectTab(WQT_TabWorld);
 		else
 			self.container:Hide();
-			self.Selected:SetAlpha(0);
+			self.Glow:SetShown(false);
 			WQT_WorldQuestFrame:SelectTab(WQT_TabNormal);
 		end
 	end
@@ -182,6 +186,18 @@ end
 
 function WQT_ContainerButtonMixin:OnLeave()
 	GameTooltip:Hide();
+end
+
+function WQT_ContainerButtonMixin:OnMouseDown(button)
+	if self:IsEnabled() then
+		self.Icon:SetPoint("TOPLEFT", 8, -8);
+		self.IconOverlay:Show();
+	end
+end
+
+function WQT_ContainerButtonMixin:OnMouseUp()
+	self.Icon:SetPoint("TOPLEFT", self, "TOPLEFT", 7, -6);
+	self.IconOverlay:Hide();
 end
 
 ----------------------------

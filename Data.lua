@@ -808,6 +808,13 @@ _V["SETTING_LIST"] = {
 			end
 			,["getValueFunc"] = function() return WQT.settings.list.includeDaily end
 			}
+	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "GENERAL", ["label"] = _L["ALIGN_WORLDMAP_BUTTON"], ["tooltip"] = _L["ALIGN_WORLDMAP_BUTTON_TT"], ["isNew"] = true
+			, ["valueChangedFunc"] = function(value) 
+				WQT.settings.general.alignWorldMapButton = value;
+				WQT_WorldQuestFrame:UpdateWorldMapButton();
+			end
+			,["getValueFunc"] = function() return WQT.settings.general.alignWorldMapButton end
+			}
 	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "GENERAL_DRAGONFLIGHT", ["label"] = _L["GOLD_PURSES"], ["tooltip"] = _L["GOLD_PURSES_TT"]
 			, ["valueChangedFunc"] = function(value)
 				WQT.settings.general.df_goldPurses = value;
@@ -985,7 +992,7 @@ _V["SETTING_LIST"] = {
 			,["getValueFunc"] = function() return WQT.settings.pin.ringType end
 			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
 			}	
-	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_VISIBILITY_ZONE"], ["tooltip"] = _L["PIN_VISIBILITY_ZONE_TT"], ["options"] = _V["PIN_VISIBILITY_ZONE"], ["isNew"] = true
+	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_VISIBILITY_ZONE"], ["tooltip"] = _L["PIN_VISIBILITY_ZONE_TT"], ["options"] = _V["PIN_VISIBILITY_ZONE"]
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.pin.zoneVisible = value;
 				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
@@ -1581,6 +1588,11 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.8",
+			["new"] = {
+				"Added option to align the world map button to the top right alongside the default ones (\"Map Legend\", \"Map Pin\", \"Map Filter\").",
+			},
+		},
 		{["version"] = "11.0.2.7",
 			["fixes"] = {
 				"Fixed fullscreen worldmap panel.",
