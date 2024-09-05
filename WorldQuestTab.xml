@@ -325,10 +325,16 @@
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
+				<Texture parentKey="WarbandBonus" alpha="1" atlas="warbands-icon" useAtlasSize="true" scale="0.9" hidden="true">
+					<Anchors>
+						<Anchor point="RIGHT" relativeKey="$parent.Rewards" relativePoint="LEFT" x="-5"/>
+					</Anchors>
+					<Color r="0.8" g="0.8" b="0.8"/>
+				</Texture>
 				<FontString parentKey="Title" inherits="GameFontNormalLeft" maxLines="1" justifyV="BOTTOM">
 					<Anchors>
 						<Anchor point="BOTTOMLEFT" relativeKey="$parent.Faction" relativePoint="RIGHT" x="5"/>
-						<Anchor point="RIGHT" relativeKey="$parent.Rewards" relativePoint="LEFT" x="-5"/>
+						<Anchor point="RIGHT" relativeKey="$parent.WarbandBonus" relativePoint="LEFT" x="-5"/>
 					</Anchors>
 					<Color r="1" g="0.82" b="0" a="1"/>
 				</FontString>

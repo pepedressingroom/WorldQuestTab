@@ -83,7 +83,7 @@ end
 local function ScanTooltipRewardForPattern(questID, pattern)
 	local result;
 	
-	WQT_Utils:AddQuestRewardsToTooltip(WQT_ScrapeTooltip, questID, TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT);
+	WQT_Utils:AddQuestRewardsToTooltip(WQT_ScrapeTooltip, questID, TOOLTIP_QUEST_REWARDS_STYLE_WORLD_QUEST);
 
 	for i=2, 6 do
 		local line = _G["WQT_ScrapeTooltipTooltipTextLeft"..i];
@@ -130,6 +130,23 @@ end
 
 local function QuestResetFunc(pool, questInfo)
 	questInfo:Reset();
+end
+
+local function IsRewardWarbandBonus(rewardInfo)
+	local mainRewardIsFirstTimeReputationBonus = false;
+	local secondaryRewardsContainFirstTimeRepBonus = false;
+	
+	if rewardInfo then
+		local isFirstTimeReward = rewardInfo.questRewardContextFlags and FlagsUtil.IsSet(rewardInfo.questRewardContextFlags, Enum.QuestRewardContextFlags.FirstCompletionBonus);
+		mainRewardIsFirstTimeReputationBonus = isFirstTimeReward and (C_CurrencyInfo.GetFactionGrantedByCurrency(rewardInfo.currencyID) ~= nil) or false;
+	elseif C_QuestLog.QuestContainsFirstTimeRepBonusForPlayer(questID) then
+		secondaryRewardsContainFirstTimeRepBonus = true;
+	end
+	
+	if mainRewardIsFirstTimeReputationBonus or secondaryRewardsContainFirstTimeRepBonus then
+		return true;
+	end
+	return false;
 end
 
 function QuestInfoMixin:Init(questId, isDaily, isCombatAllyQuest, alwaysHide, posX, posY)
@@ -278,18 +295,25 @@ function QuestInfoMixin:LoadRewards(force)
 		end
 		
 		-- Currency
-		local currencyRewards = C_QuestInfoSystem.GetQuestRewardCurrencies(self.questId);
-		for i=1, #currencyRewards do
-			local currencyInfo = currencyRewards[i];
+		local questRewardCurrencyInfo = C_QuestLog.GetQuestRewardCurrencies(self.questId);
+		for i, currencyInfo in pairs(questRewardCurrencyInfo) do
 			if currencyInfo then
 				local currencyID = currencyInfo.currencyID;
 				local isRep = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID) ~= nil;
 				local name, texture, amount, quality = CurrencyContainerUtil.GetCurrencyContainerInfo(currencyInfo.currencyID, currencyInfo.totalRewardAmount, currencyInfo.name, currencyInfo.texture, currencyInfo.quality);
 				local currType = currencyID == _azuriteID and WQT_REWARDTYPE.artifact or (isRep and WQT_REWARDTYPE.reputation or WQT_REWARDTYPE.currency);
 				local color = currType == WQT_REWARDTYPE.artifact and WQT_Utils:GetColor(_V["COLOR_IDS"].rewardArtiface) or  WQT_Utils:GetColor(_V["COLOR_IDS"].rewardCurrency);
-				
 				self:AddReward(currType, currencyInfo.totalRewardAmount, texture, quality, color, currencyID);
+				
+				local isCurrencyContainer = C_CurrencyInfo.IsCurrencyContainer(currencyInfo.currencyID, currencyInfo.totalRewardAmount);
+				if isCurrencyContainer then
+					self.hasWarbandBonus = IsRewardWarbandBonus(currencyInfo);
+				end
 			end
+		end
+		
+		if C_QuestLog.QuestContainsFirstTimeRepBonusForPlayer(self.questId) and not self.hasWarbandBonus then
+			self.hasWarbandBonus = true;
 		end
 		
 		-- Player experience 
@@ -471,6 +495,10 @@ end
 
 function QuestInfoMixin:IsQuestOfType(questType)
 	return bit.band(self.typeBits, questType) > 0;
+end
+
+function QuestInfoMixin:HasWarbandBonus()
+	return self.hasWarbandBonus;
 end
 
 ----------------------------

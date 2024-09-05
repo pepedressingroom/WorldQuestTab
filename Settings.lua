@@ -186,6 +186,13 @@ function WQT_SettingsQuestListMixin:UpdateState()
 		questFrame.Time:SetVertexColor(_V["WQT_WHITE_FONT_COLOR"]:GetRGB());
 	end
 	
+	-- Warband bonus
+	if (WQT.settings.list.showWarbandBonus) then
+		questFrame.WarbandBonus:Show();
+	else
+		questFrame.WarbandBonus:Hide();
+	end
+	
 	-- Fake rewards
 	questFrame.Rewards:Reset();
 	questFrame.Rewards:AddReward(WQT_REWARDTYPE.equipment, 1733697, 3, 410, _V["WQT_COLOR_ARMOR"], true);

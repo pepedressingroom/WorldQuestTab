@@ -75,7 +75,12 @@
 				<Texture parentKey="Pointer" alpha="1" file="Interface\Addons\WorldQuestTab\Images\PoIRingPointer"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="5">
-				 <FontString parentKey="Time" inherits="WQT_NumberFontOutline" maxLines="1" justifyV="MIDDLE" text="Uh oh" hidden="true">
+				<Texture parentKey="WarbandBonusIcon" alpha="1" atlas="warbands-icon" useAtlasSize="true" scale="0.9" hidden="true">
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP" y="16"/>
+					</Anchors>
+				</Texture>
+				<FontString parentKey="Time" inherits="WQT_NumberFontOutline" maxLines="1" justifyV="MIDDLE" text="Uh oh" hidden="true">
 					<size y="18"/>
 					<Anchors>
 						<Anchor point="TOP" relativePoint="BOTTOM" x="2" y="2"/>

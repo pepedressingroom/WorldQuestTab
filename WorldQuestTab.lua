@@ -594,6 +594,12 @@ local function ConvertOldSettings(version)
 		WQT.db.global.pin.continentVisible = WQT.db.global.pin.continentPins and _V["ENUM_PIN_CONTINENT"].all or _V["ENUM_PIN_CONTINENT"].none;
 		WQT.db.global.pin.continentPins = nil
 	end
+	
+	if (version < "11.0.2.8") then
+		-- Enable warband bonus displays by default
+		WQT.db.global.pin.showWarbandBonus = true;
+		WQT.db.global.list.showWarbandBonus = true;
+	end
 end
 
 -- Display an indicator on the filter if some official map filters might hide quest
@@ -1175,7 +1181,7 @@ function WQT_ListButtonMixin:OnEnter()
 	WQT_WorldQuestFrame.pinDataProvider:SetQuestIDPinged(self.questInfo.questId, true);
 	WQT_WorldQuestFrame:ShowWorldmapHighlight(questInfo.questId);
 	
-	local style = _V["TOOLTIP_STYLES"].default;
+	local style = nil;
 	if (questInfo:IsQuestOfType(WQT_QUESTTYPE.calling)) then
 		if (C_QuestLog.IsOnQuest(questInfo.questId)) then
 			style = _V["TOOLTIP_STYLES"].callingActive;
@@ -1234,7 +1240,6 @@ function WQT_ListButtonMixin:UpdateQuestType(questInfo)
 end
 
 function WQT_ListButtonMixin:Update(questInfo, shouldShowZone)
-
 	if (self.questInfo ~= questInfo) then
 		self.TrackedBorder:Hide();
 		self.Highlight:Hide();
@@ -1267,7 +1272,6 @@ function WQT_ListButtonMixin:Update(questInfo, shouldShowZone)
 	end
 	
 	self.Title:SetText(title);
-	
 	self.Title:ClearAllPoints()
 	self.Title:SetPoint("RIGHT", self.Rewards, "LEFT", -5, 0);
 	
@@ -1330,6 +1334,13 @@ function WQT_ListButtonMixin:Update(questInfo, shouldShowZone)
 	self.Type.Bg:SetDesaturated(isDisliked);
 	self.Type.Texture:SetDesaturated(isDisliked);
 	self.Type.Elite:SetDesaturated(isDisliked);
+
+	-- Warband bonus
+	if (WQT.settings.list.showWarbandBonus) and questInfo:HasWarbandBonus() then
+		self.WarbandBonus:Show();
+	else
+		self.WarbandBonus:Hide();
+	end
 
 	-- Rewards
 	self.Rewards:Reset();
@@ -2718,7 +2729,13 @@ function WQT_CoreMixin:ChangeAnchorLocation(anchor)
 		WQT_WorldMapContainer:Hide();
 	end
 	
-	if (not anchor) then return end
+	if (not anchor) then
+		WQT_WorldQuestFrame:SetParent(QuestMapFrame);
+		WQT_WorldQuestFrame:SetPoint("TOPLEFT", parent, 3, -10);
+		WQT_WorldQuestFrame:SetPoint("BOTTOMRIGHT", parent, -8, 3);
+		WQT_WorldQuestFrame:SelectTab(WQT_TabWorld);
+		return
+	end
 	
 	self.anchor = anchor;
 	
@@ -2730,6 +2747,15 @@ function WQT_CoreMixin:ChangeAnchorLocation(anchor)
 	
 	if (anchor == _V["LIST_ANCHOR_TYPE"].flight) then
 		parent = WQT_FlightMapContainer;
+		
+		WQT_WorldQuestFrame:ClearAllPoints();
+		WQT_WorldQuestFrame:SetParent(parent);
+		WQT_WorldQuestFrame:SetPoint("TOPLEFT", parent, 3, -10);
+		WQT_WorldQuestFrame:SetPoint("BOTTOMRIGHT", parent, -8, 3);
+		WQT_WorldQuestFrame:SelectTab(tab);
+		
+		WQT_WorldQuestFrame:TriggerCallback("AnchorChanged", anchor);
+		return;
 	elseif (anchor == _V["LIST_ANCHOR_TYPE"].taxi) then
 		parent = WQT_OldTaxiMapContainer;
 	elseif (anchor == _V["LIST_ANCHOR_TYPE"].world) then

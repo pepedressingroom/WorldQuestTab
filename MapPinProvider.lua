@@ -531,6 +531,7 @@ function WQT_PinMixin:UpdateVisuals()
 	local isDisliked = questInfo:IsDisliked();
 	local typeAtlas, typeAtlasWidth, typeAtlasHeight =  WQT_Utils:GetCachedTypeIconData(questInfo);
 	local isWatched = QuestUtils_IsQuestWatched(questInfo.questId);
+	local hasWarbandBonus = questInfo:HasWarbandBonus();
 
 	-- Ring coloration
 	local ringType = WQT_Utils:GetSetting("pin", "ringType");
@@ -723,6 +724,14 @@ function WQT_PinMixin:UpdateVisuals()
 	end
 	self.Time:SetPoint("TOP", self, "BOTTOM", 1, timeOffset);
 
+	-- Warband bonus icon
+	local settingPinWarbandBonus = WQT_Utils:GetSetting("pin", "showWarbandBonus");
+	if hasWarbandBonus then
+		self.WarbandBonusIcon:SetShown(settingPinWarbandBonus);
+	else
+		self.WarbandBonusIcon:SetShown(false);
+	end
+	
 	self:SetIconsDesaturated(isDisliked);
 	self:UpdatePinTime();
 	self:UpdatePlacement();

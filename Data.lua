@@ -887,6 +887,13 @@ _V["SETTING_LIST"] = {
 			end
 			,["getValueFunc"] = function() return WQT.settings.list.showZone end
 			}
+	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "QUESTLIST", ["label"] = _L["SHOW_WARBAND_BONUS"], ["tooltip"] = _L["SHOW_WARBAND_BONUS_TT"], ["isNew"] = true
+			, ["valueChangedFunc"] = function(value) 
+				WQT.settings.list.showWarbandBonus = value;
+				WQT_QuestScrollFrame:DisplayQuestList();
+			end
+			,["getValueFunc"] = function() return WQT.settings.list.showWarbandBonus end
+			}
 	,{["template"] = "WQT_SettingSliderTemplate", ["categoryID"] = "QUESTLIST", ["label"] = _L["REWARD_NUM_DISPLAY"], ["tooltip"] = _L["REWARD_NUM_DISPLAY_TT"], ["min"] = 0, ["max"] = 3, ["valueStep"] = 1
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.list.rewardNumDisplay = value;
@@ -952,6 +959,15 @@ _V["SETTING_LIST"] = {
 			]]--
 	-- Pin appearance
 	,{["template"] =" WQT_SettingSubTitleTemplate", ["categoryID"] = "MAPPINS", ["label"] = APPEARANCE_LABEL}
+	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "MAPPINS", ["label"] =  _L["PIN_WARBAND_BONUS"], ["tooltip"] = _L["PIN_WARBAND_BONUS_TT"], ["isNew"] = true
+			, ["valueChangedFunc"] = function(value) 
+				WQT.settings.pin.showWarbandBonus  = value;
+				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
+			end
+			,["getValueFunc"] = function() return WQT.settings.pin.showWarbandBonus end
+			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
+			}		
+	
 	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_TIME"], ["tooltip"] = _L["PIN_TIME_TT"]
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.pin.timeLabel  = value;
@@ -1588,6 +1604,15 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.9",
+			["new"] = {
+				"Added option to show Warband bonus icon on the map pin and quest list.",
+			},
+			["fixes"] = {
+				"Fixed flight map showing incorrectly.",
+				"Fixed tooltips not showing Warband bonuses.",
+			},
+		},
 		{["version"] = "11.0.2.8",
 			["new"] = {
 				"Added option to align the world map button to the top right alongside the default ones (\"Map Legend\", \"Map Pin\", \"Map Filter\").",
