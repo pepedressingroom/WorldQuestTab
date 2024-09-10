@@ -121,7 +121,7 @@
 		<Frames>
 			<CheckButton parentKey="CheckBox" inherits="UICheckButtonTemplate">
 				<Size x="25" y="25"/>
-				<HitRectInsets right="-75"/>
+				<HitRectInsets right="-150"/>
 				<Anchors>
 					<Anchor point="LEFT" x="25"/>
 				</Anchors>

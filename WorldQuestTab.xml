@@ -617,65 +617,6 @@
 					</OnHide>
 				</Scripts>
 			</Cooldown>
-		
-			<Frame parentKey="FilterBar" hidden="true">
-				<Size x="304" y="0.1"/>
-				<Anchors>
-					<Anchor point="TOPRIGHT" x="-26" y="-1"/>
-				</Anchors>
-				<Layers>
-					<Layer level="ARTWORK">
-						<Texture file="Interface\Buttons\UI-Listbox-Highlight2">
-							<Color r="0.6" g="0.75" b="1.0" a="0.5" />
-						</Texture>
-						<FontString parentKey="Text" inherits="GameFontHighlightSmall" justifyH="LEFT">
-							<Size x="235" y="13"/>
-							<Anchors>
-								<Anchor point="LEFT" x="5" y="0"/>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Frames>
-					<Button name="$parentClearButton" parentKey="ClearButton" hidden="true">
-						<Size x="17" y="17"/>
-						<Anchors>
-							<Anchor point="RIGHT"/>
-						</Anchors>
-						<Layers>
-							<Layer level="ARTWORK">
-								<Texture file="Interface\FriendsFrame\ClearBroadcastIcon" alpha="0.5" parentKey="texture">
-									<Size>
-										<AbsDimension x="17" y="17"/>
-									</Size>
-									<Anchors>
-										<Anchor point="TOPLEFT" x="0" y="0"/>
-									</Anchors>
-								</Texture>
-							</Layer>
-						</Layers>
-						<Scripts>
-							<OnClick>
-								self:GetParent():GetParent():FilterClearButtonOnClick();
-							</OnClick>
-							<OnEnter>
-								self.texture:SetAlpha(1.0);
-							</OnEnter>
-							<OnLeave>
-								self.texture:SetAlpha(0.5);
-							</OnLeave>
-							<OnMouseDown>
-								if self:IsEnabled() then
-									self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1);
-								end
-							</OnMouseDown>
-							<OnMouseUp>
-								self.texture:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0);
-							</OnMouseUp>
-						</Scripts>
-					</Button>
-				</Frames>
-			</Frame>
 			
 			<EventScrollFrame parentKey="ScrollFrame" name="WQT_QuestScrollFrame" mixin="WQT_ScrollListMixin" inherits="ScrollFrameTemplate">
 				<KeyValues>

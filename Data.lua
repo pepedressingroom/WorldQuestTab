@@ -1060,7 +1060,7 @@ _V["SETTING_LIST"] = {
 			}
 }
 
-_V["SETTING_UTILITIES_LIST"] = {
+--[[_V["SETTING_UTILITIES_LIST"] = {
 	{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "WQTU", ["label"] = _L["LOAD_UTILITIES"], ["tooltip"] = _L["LOAD_UTILITIES_TT"], ["disabledTooltip"] = _L["LOAD_UTILITIES_TT_DISABLED"]
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.general.loadUtilities = value;
@@ -1072,7 +1072,7 @@ _V["SETTING_UTILITIES_LIST"] = {
 			,["getValueFunc"] = function() return WQT.settings.general.loadUtilities end
 			,["isDisabled"] = function() return GetAddOnEnableState(nil, "WorldQuestTabUtilities") == 0 end
 			}	
-}
+}]]
 
 _V["TIME_REMAINING_CATEGORY"] = {
 	["none"] = 0
@@ -1604,6 +1604,12 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.10",
+			["changes"] = {
+				"Disabled WorldQuestTabUtilities, it is not compatible.",
+				"Now some settings are easier to click.",
+			},
+		},
 		{["version"] = "11.0.2.9",
 			["new"] = {
 				"Added option to show Warband bonus icon on the map pin and quest list.",

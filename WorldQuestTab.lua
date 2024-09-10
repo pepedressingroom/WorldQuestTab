@@ -894,9 +894,9 @@ function WQT:OnEnable()
 	WQT_TabWorld.TabBg:SetTexCoord(0.01562500, 0.79687500, 0.61328125, 0.78125000);
 	
 	-- load WorldQuestTabUtilities
-	if (WQT.settings.general.loadUtilities and C_AddOns.GetAddOnEnableState(_playerName, "WorldQuestTabUtilities") > 0 and not C_AddOns.IsAddOnLoaded("WorldQuestTabUtilities")) then
-		LoadAddOn("WorldQuestTabUtilities");
-	end
+	--if (WQT.settings.general.loadUtilities and C_AddOns.GetAddOnEnableState(_playerName, "WorldQuestTabUtilities") > 0 and not C_AddOns.IsAddOnLoaded("WorldQuestTabUtilities")) then
+	--	LoadAddOn("WorldQuestTabUtilities");
+	--end
 	
 	-- Place fullscreen button in saved location
 	WQT_WorldMapContainerButton:LinkSettings(WQT.settings.general.fullScreenButtonPos);
@@ -1444,58 +1444,9 @@ end
 function WQT_ScrollListMixin:UpdateFilterDisplay()
 	local isFiltering = WQT:IsFiltering();
 	
-	-- Show/hide X buton on filter dropdown
-	WQT_WorldQuestFrame.FilterBar.ClearButton:SetShown(isFiltering);
-	
 	-- There are world quests available so hide these texts
 	WQT_WorldQuestFrame.ScrollFrame.EmptyText:SetShown(false);
 	WQT_WorldQuestFrame.ScrollFrame.NoFilterResultsText:SetShown(false);
-	
-	-- If we're not filtering, return!!
-	if not isFiltering then
-		return;
-	end
-	
-
-	local filterList = "";
-	-- If we are filtering, 'show' things
-	--WQT_WorldQuestFrame.FilterBar:SetHeight(20);
-	
-	-- Emissary has priority
-	if (WQT.settings.general.emissaryOnly or WQT_WorldQuestFrame.autoEmissaryId) then
-		local text = _L["TYPE_EMISSARY"]
-		if WQT_WorldQuestFrame.autoEmissaryId then
-			text = GARRISON_TEMPORARY_CATEGORY_FORMAT:format(text);
-		end
-		
-		filterList = text;	
-	else
-		if (not WQT.settings.general.showDisliked) then
-			filterList = _L["UNINTERESTED"];
-		end
-	
-		for k, option in pairs(WQT.settings.filters) do
-			local counts = WQT:IsUsingFilterNr(k);
-			if (counts) then
-				filterList = filterList == "" and option.name or string.format("%s, %s", filterList, option.name);
-				break;
-			end
-		end
-	end
-	
-	local numHidden = 0;
-	local totalValid = 0;
-	for k, questInfo in ipairs(self.questList) do
-		if (questInfo.isValid and questInfo.hasRewardData) then
-			if (questInfo.passedFilter) then
-				numHidden = numHidden + 1;
-			end	
-			totalValid = totalValid + 1;
-		end
-	end
-	
-	local filterFormat = "(%d/%d) "..FILTERS..": %s"
-	--WQT_WorldQuestFrame.FilterBar.Text:SetText(filterFormat:format(numHidden, totalValid, filterList)); 
 end
 
 function WQT_ScrollListMixin:FilterQuestList()
@@ -2503,8 +2454,8 @@ function WQT_CoreMixin:ADDON_LOADED(loaded)
 		WQT_FlightMapContainerButton:SetFrameLevel(FlightMapFrame:GetFrameLevel()+2);
 	elseif (loaded == "WorldFlightMap") then
 		_WFMLoaded = true;
-	elseif (loaded == "WorldQuestTabUtilities") then
-		WQT.settings.general.loadUtilities = true;
+	--elseif (loaded == "WorldQuestTabUtilities") then
+	--	WQT.settings.general.loadUtilities = true;
 	end
 	
 	-- Load waiting externals
@@ -2615,7 +2566,6 @@ function WQT_CoreMixin:ShowOverlayFrame(frame)
 	
 	-- Hide quest and filter to prevent bleeding through when walking around
 	WQT_QuestScrollFrame:Hide();
-	self.FilterBar:Hide();
 end
 
 function WQT_CoreMixin:HideOverlayFrame()
@@ -2630,7 +2580,6 @@ function WQT_CoreMixin:HideOverlayFrame()
 	
 	-- Show everything again
 	WQT_QuestScrollFrame:Show();
-	--self.FilterBar:Show();
 end
 
 -- Enable/Disable all world quest list functionality
