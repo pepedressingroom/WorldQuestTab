@@ -1116,16 +1116,20 @@ _V["WARMODE_BONUS_REWARD_TYPES"] = {
 	}
 
 _V["WQT_CVAR_LIST"] = {
-		["Petbattle"] = "showTamers"
+		["Petbattle"] = "showTamersWQ"
+		,["Anima"] = "worldQuestFilterAnima"
 		,["Artifact"] = "worldQuestFilterArtifactPower"
 		,["Armor"] = "worldQuestFilterEquipment"
 		,["Gold"] = "worldQuestFilterGold"
 		,["Currency"] = "worldQuestFilterResources"
+		,["Profession"] = "worldQuestFilterProfessionMaterials"
+		,["Reputation"] = "worldQuestFilterReputation"
+		,["Skyriding"] = "dragonRidingRacesFilterWQ"
 	}
 	
 _V["WQT_TYPEFLAG_LABELS"] = {
 		[2] = {["Default"] = DEFAULT, ["Elite"] = ELITE, ["PvP"] = PVP, ["Petbattle"] = PET_BATTLE_PVP_QUEUE, ["Dungeon"] = TRACKER_HEADER_DUNGEON, ["Raid"] = RAID, ["Profession"] = BATTLE_PET_SOURCE_4, ["Invasion"] = _L["TYPE_INVASION"], ["Assault"] = SPLASH_BATTLEFORAZEROTH_8_1_FEATURE2_TITLE
-			, ["Daily"] = DAILY, ["Threat"] = REPORT_THREAT, ["Bonus"] = SCENARIO_BONUS_LABEL}
+			, ["Daily"] = DAILY, ["Threat"] = REPORT_THREAT, ["Bonus"] = SCENARIO_BONUS_LABEL, ["Skyriding"] = DRAGONRIDING_RACES_MAP_TOGGLE}
 		,[3] = {["Item"] = ITEMS, ["Armor"] = WORLD_QUEST_REWARD_FILTERS_EQUIPMENT, ["Gold"] = WORLD_QUEST_REWARD_FILTERS_GOLD, ["Currency"] = CURRENCY, ["Artifact"] = ITEM_QUALITY6_DESC, ["Anima"] = WORLD_QUEST_REWARD_FILTERS_ANIMA, ["Conduits"] = _L["REWARD_CONDUITS"]
 			, ["Relic"] = RELICSLOT, ["None"] = NONE, ["Experience"] = POWER_TYPE_EXPERIENCE, ["Honor"] = HONOR, ["Reputation"] = REPUTATION}
 	};
@@ -1284,18 +1288,19 @@ _V["REWARD_TYPE_ATLAS"] = {
 
 _V["FILTER_FUNCTIONS"] = {
 		[2] = { -- Types
-			["PvP"] 			= function(questInfo, tagInfo) return tagInfo and (tagInfo.worldQuestType == Enum.QuestTagType.PvP or tagInfo.worldQuestType == Enum.QuestTagType.Bounty); end 
-			,["Petbattle"] 	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.PetBattle; end 
-			,["Dungeon"] 	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Dungeon; end 
-			,["Raid"] 		= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Raid; end 
-			,["Profession"] 	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Profession; end 
-			,["Invasion"] 	= function(questInfo, tagInfo) return tagInfo and (tagInfo.worldQuestType == Enum.QuestTagType.Invasion or tagInfo.worldQuestType == Enum.QuestTagType.InvasionWrapper); end 
+			["PvP"]			= function(questInfo, tagInfo) return tagInfo and (tagInfo.worldQuestType == Enum.QuestTagType.PvP or tagInfo.worldQuestType == Enum.QuestTagType.Bounty); end 
+			,["Petbattle"]	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.PetBattle; end 
+			,["Dungeon"]	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Dungeon; end 
+			,["Raid"]		= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Raid; end 
+			,["Profession"]	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.Profession; end 
+			,["Invasion"]	= function(questInfo, tagInfo) return tagInfo and (tagInfo.worldQuestType == Enum.QuestTagType.Invasion or tagInfo.worldQuestType == Enum.QuestTagType.InvasionWrapper); end 
 			,["Assault"]	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.FactionAssault; end 
 			,["Elite"]		= function(questInfo, tagInfo) return tagInfo and tagInfo.isElite and tagInfo.worldQuestType ~= Enum.QuestTagType.Dungeon; end
-			,["Default"]	= function(questInfo, tagInfo) return tagInfo and ((not tagInfo.isElite and tagInfo.worldQuestType == Enum.QuestTagType.Normal) or tagInfo.worldQuestType == Enum.QuestTagType.DragonRiderRacing or tagInfo.worldQuestType == Enum.QuestTagType.CovenantCalling); end 
+			,["Default"]	= function(questInfo, tagInfo) return tagInfo and ((not tagInfo.isElite and tagInfo.worldQuestType == Enum.QuestTagType.Normal) or tagInfo.worldQuestType == Enum.QuestTagType.CovenantCalling); end 
 			,["Daily"]		= function(questInfo, tagInfo) return questInfo.isDaily; end 
 			,["Threat"]		= function(questInfo, tagInfo) return C_QuestLog.IsThreatQuest(questInfo.questId); end 
 			,["Bonus"]		= function(questInfo, tagInfo) return not tagInfo; end
+			,["Skyriding"]	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.DragonRiderRacing; end
 			}
 		,[3] = { -- Reward filters
 			["Armor"]		= function(questInfo, tagInfo) return bit.band(questInfo.reward.typeBits, WQT_REWARDTYPE.equipment + WQT_REWARDTYPE.weapon) > 0; end
@@ -1579,13 +1584,14 @@ _V["WQT_DEFAULTS"] = {
 			eliteRing = false;
 			ringType = _V["RING_TYPES"].time;
 			centerType = _V["PIN_CENTER_TYPES"].reward;
+			showWarbandBonus = true;
 		};
 
 		["filters"] = {
 				[_V["FILTER_TYPES"].faction] = {["name"] = FACTION
 						,["misc"] = {["none"] = true, ["other"] = true}, ["flags"] = {}}-- Faction filters are assigned later
 				,[_V["FILTER_TYPES"].type] = {["name"] = TYPE
-						, ["flags"] = {["Default"] = true, ["Elite"] = true, ["PvP"] = true, ["Petbattle"] = true, ["Dungeon"] = true, ["Raid"] = true, ["Profession"] = true, ["Invasion"] = true, ["Assault"] = true, ["Daily"] = true, ["Threat"] = true, ["Bonus"] = true}}
+						, ["flags"] = {["Default"] = true, ["Elite"] = true, ["PvP"] = true, ["Petbattle"] = true, ["Dungeon"] = true, ["Raid"] = true, ["Profession"] = true, ["Invasion"] = true, ["Assault"] = true, ["Daily"] = true, ["Threat"] = true, ["Bonus"] = true, ["Skyriding"] = true}}
 				,[_V["FILTER_TYPES"].reward] = {["name"] = REWARD
 						, ["flags"] = {["Item"] = true, ["Armor"] = true, ["Gold"] = true, ["Currency"] = true, ["Anima"] = true, ["Conduits"] = true, ["Artifact"] = true, ["Relic"] = true, ["None"] = true, ["Experience"] = true, ["Honor"] = true, ["Reputation"] = true}}
 			};
@@ -1604,6 +1610,13 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.11",
+			["fixes"] = {
+				"Now World Map filters work correctly and updates WorldQuestTab filters. Should fix some quests that were displayed as world quests.",
+				"Pet battles filter now working as intended.",
+				"Added missing Skyriding filter option.",
+			},
+		},
 		{["version"] = "11.0.2.10",
 			["changes"] = {
 				"Disabled WorldQuestTabUtilities, it is not compatible.",

@@ -604,7 +604,15 @@ end
 
 -- Display an indicator on the filter if some official map filters might hide quest
 function WQT:UpdateFilterIndicator()
-	if (C_CVar.GetCVarBool("showTamers") and C_CVar.GetCVarBool("worldQuestFilterArtifactPower") and C_CVar.GetCVarBool("worldQuestFilterResources") and C_CVar.GetCVarBool("worldQuestFilterGold") and C_CVar.GetCVarBool("worldQuestFilterEquipment")) then
+	local isFilterUncheck = false;
+	for k, cVar in pairs(_V["WQT_CVAR_LIST"]) do
+		if C_CVar.GetCVarBool(cVar) == false then
+			isFilterUncheck = true;
+			break;
+		end
+	end
+
+	if not isFilterUncheck then
 		WQT_WorldQuestFrame.FilterButton.Indicator:Hide();
 	else
 		WQT_WorldQuestFrame.FilterButton.Indicator:Show();
@@ -1459,14 +1467,16 @@ function WQT_ScrollListMixin:FilterQuestList()
 		if (questInfo.isValid and not questInfo.alwaysHide and questInfo.hasRewardData and not questInfo:IsExpired()) then
 			local passed = false;
 			-- Filter passes don't care about anything else
-			if(WQT_Utils:QuestIsVIQ(questInfo)) then 
+			if(WQT_Utils:QuestIsVIQ(questInfo)) then
 				passed = true;
 			else
 				-- Official filtering
-				passed = BlizFiltering and WorldMap_DoesWorldQuestInfoPassFilters(questInfo) or not BlizFiltering;
-				-- Add-on filters
-				if (passed and WQTFiltering) then
-					passed = WQT:PassesAllFilters(questInfo);
+				if QuestUtils_IsQuestWorldQuest(questInfo.questId) then
+					passed = BlizFiltering and WorldMap_DoesWorldQuestInfoPassFilters(questInfo) or not BlizFiltering;
+					-- Add-on filters
+					if (passed and WQTFiltering) then
+						passed = WQT:PassesAllFilters(questInfo);
+					end
 				end
 			end
 			
@@ -1479,7 +1489,7 @@ function WQT_ScrollListMixin:FilterQuestList()
 		
 		-- In debug, still filter, but show everything.
 		if (not questInfo.passedFilter and addon.debug) then
-				table.insert(self.questListDisplay, questInfo);
+			table.insert(self.questListDisplay, questInfo);
 		end
 	end
 	
@@ -2090,23 +2100,24 @@ function WQT_CoreMixin:OnLoad()
 	
 	-- Update our filters when changes are made to the world map filters
 	local worldMapFilter;
-	
 	for k, frame in ipairs(WorldMapFrame.overlayFrames) do
 		for name in pairs(frame) do
-			if (name == "OnSelection") then
+			if name == "SetupMenu" and IsDropdownButtonIntrinsic(frame) then
 				worldMapFilter = frame;
 				break;
 			end
 		end
 	end
 	if (worldMapFilter) then
-		hooksecurefunc(worldMapFilter, "OnSelection", function() 
-				self.ScrollFrame:UpdateQuestList();
-				WQT:UpdateFilterIndicator();
-			end);
+		local function UpdateFilters()
+			self.ScrollFrame:UpdateQuestList();
+			WQT:UpdateFilterIndicator();
+		end
+		hooksecurefunc(worldMapFilter, "OnMenuResponse", function() UpdateFilters(); end);
+		worldMapFilter.ResetButton:HookScript("OnClick", function() UpdateFilters(); end);
 		self.worldMapFilter = worldMapFilter;
 	end
-	
+
 	-- Auto emissary filter when clicking on one of the buttons
 	local bountyBoard = WorldMapFrame.overlayFrames[_V["WQT_BOUNTYBOARD_OVERLAYID"]];
 	self.bountyBoard = bountyBoard;
