@@ -151,7 +151,9 @@ local WQT_WAR_WITHIN = {
 	[2215] =  {["x"] = 0.37, ["y"] = 0.48}, -- Hallowfall
 	[2248] =  {["x"] = 0.76, ["y"] = 0.21}, -- Isle of Dorn
 	[2255] =  {["x"] = 0.46, ["y"] = 0.69}, -- Azj-Kahet
+	-- [2256] =  {["x"] = 0.46, ["y"] = 0.69}, -- Azj-Kahet - Lower
 	[2213] =  {["x"] = 0.44, ["y"] = 0.73}, -- City of Threads
+	-- [2216] =  {["x"] = 0.44, ["y"] = 0.73}, -- City of Threads - Lower
 	[2339] =  {["x"] = 0.73, ["y"] = 0.25}, -- Dornogal
 }
 local WQT_DRAGONFLIGHT = {
@@ -313,7 +315,7 @@ local ZonesByExpansion = {
 		2215, -- Hallowfall
 		2248, -- Isle of Dorn
 		2255, -- Azj-Kahet
-		2256, -- Az-Kahet Lower
+		2256, -- Azj-Kahet - Lower
 	}
 	,[LE_EXPANSION_DRAGONFLIGHT] = {
 		1978, -- Dragon Isles
@@ -1338,6 +1340,8 @@ _V["WQT_CONTINENT_GROUPS"] = {
 	}
 
 _V["ZONE_SUBZONES"] = {
+	[2255] = {2256, 2213, 2216}; -- Azj-Kahet, Azj-Kahet - Lower, City of Threads, City of Threads - Lower
+	[2256] = {2255, 2213, 2216}; -- Azj-Kahet - Lower, Azj-Kahet, City of Threads, City of Threads - Lower
 	[2025] = {2112, 2085}; -- Thaldraszus, Valdrakken, Primalist Future
 	[1565] = {1701, 1702, 1703}; -- Ardenweald covenant
 	[1533] = {1707, 1708}; -- Bastion Covenant
