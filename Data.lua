@@ -1610,6 +1610,11 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.12",
+			["fixes"] = {
+				"Current world quest was not showing on map.",
+			},
+		},
 		{["version"] = "11.0.2.11",
 			["fixes"] = {
 				"Now World Map filters work correctly and updates WorldQuestTab filters. Should fix some quests that were displayed as world quests.",
