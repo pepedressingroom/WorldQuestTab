@@ -1614,6 +1614,12 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.2.13",
+			["fixes"] = {
+				"World quests of City of Threads on Azj-Kahet now displays correctly.",
+				"Bonus world quests are now fully working.",
+			},
+		},
 		{["version"] = "11.0.2.12",
 			["fixes"] = {
 				"Current world quest was not showing on map.",

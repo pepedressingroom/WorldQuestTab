@@ -167,6 +167,7 @@ function QuestInfoMixin:Init(questId, isDaily, isCombatAllyQuest, alwaysHide, po
 	if (C_QuestLog.IsThreatQuest(self.questId)) then self.typeBits = bit.bor(self.typeBits, WQT_QUESTTYPE.threat); end
 	if (C_QuestLog.IsQuestCalling(self.questId)) then self.typeBits = bit.bor(self.typeBits, WQT_QUESTTYPE.calling); end
 	if (isCombatAllyQuest) then self.typeBits = bit.bor(self.typeBits, WQT_QUESTTYPE.combatAlly); end
+	if (QuestUtils_IsQuestBonusObjective(self.questId)) then self.typeBits = bit.bor(self.typeBits, WQT_QUESTTYPE.bonus); end
 
 	-- rewards
 	self:LoadRewards();
@@ -372,6 +373,11 @@ end
 
 function QuestInfoMixin:IsExpired()
 	local timeLeftSeconds =  C_TaskQuest.GetQuestTimeLeftSeconds(self.questId) or 0;
+	if self:IsBonusObjective() then
+		-- C_TaskQuest.GetQuestTimeLeftSeconds returns 0 if it is a bonus world quest so this always fails
+		-- Hardcode the value so next line returns true
+		timeLeftSeconds = 2;
+	end
 	return self.time.seconds and self.time.seconds > 0 and timeLeftSeconds < 1;
 end
 
@@ -499,6 +505,10 @@ end
 
 function QuestInfoMixin:HasWarbandBonus()
 	return self.hasWarbandBonus;
+end
+
+function QuestInfoMixin:IsBonusObjective()
+	return self.typeBits and self:IsQuestOfType(WQT_QUESTTYPE.bonus);
 end
 
 ----------------------------

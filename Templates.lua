@@ -400,7 +400,38 @@ function WQT_Utils:GetQuestTimeString(questInfo, fullString, unabreviated)
 	
 	timeLeftMinutes = C_TaskQuest.GetQuestTimeLeftMinutes(questInfo.questId) or 0;
 	timeLeftSeconds =  C_TaskQuest.GetQuestTimeLeftSeconds(questInfo.questId) or 0;
-	if ( timeLeftSeconds  and timeLeftSeconds > 0) then
+
+	local isBonus = questInfo:IsBonusObjective();
+	local widgetText = "";
+	-- Bonus world quest have their time on a widget
+	if isBonus then
+		local widgetSetID = C_TaskQuest.GetQuestTooltipUIWidgetSet(questInfo.questId);
+		if widgetSetID then
+			local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID);
+			for k,v in pairs(widgets) do
+				local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(v.widgetID)
+				if widgetInfo and widgetInfo.text then
+					widgetText = widgetInfo.text;
+					-- Get numbers between spaces, not sure about all of this..
+					local m1, m2 = string.match(widgetInfo.text, " (%d+) .+ (%d+) ");
+					if not tonumber(m2) then -- Only seconds
+						m1 = string.match(widgetInfo.text, "(%d+)");
+						timeLeftMinutes = 0;
+						timeLeftSeconds = tonumber(m1) or 0;
+					elseif tonumber(m1) and tonumber(m2) then -- Minutes and seconds
+						timeLeftMinutes = tonumber(m1) or 0;
+						timeLeftSeconds = tonumber(m2) + (timeLeftMinutes * 60);
+					else -- If it fails...
+						timeLeftMinutes = 0;
+						timeLeftSeconds = 0;
+					end
+					break;
+				end
+			end
+		end
+	end
+	
+	if timeLeftSeconds and timeLeftSeconds > 0 then
 		local displayTime = timeLeftSeconds
 		if (displayTime < SECONDS_PER_HOUR  and displayTime >= SECONDS_PER_MIN ) then
 			displayTime = displayTime + SECONDS_PER_MIN ;
@@ -445,8 +476,12 @@ function WQT_Utils:GetQuestTimeString(questInfo, fullString, unabreviated)
 	if t and str then
 		timeStringShort = t..str;
 	end
+	if isBonus and widgetText then
+		timeString = widgetText;
+		category = _V["TIME_REMAINING_CATEGORY"].critical;
+	end
 	
-	return timeLeftSeconds, timeString, color, timeStringShort ,timeLeftMinutes, category;
+	return timeLeftSeconds, timeString, color, timeStringShort, timeLeftMinutes, category;
 end
 
 function WQT_Utils:GetPinTime(questInfo)
@@ -714,6 +749,8 @@ function WQT_Utils:ShowQuestTooltip(button, questInfo, style)
 	if (seconds > 0 or category == _V["TIME_REMAINING_CATEGORY"].expired) then
 		timeColor = seconds <= SECONDS_PER_HOUR  and timeColor or NORMAL_FONT_COLOR;
 		GameTooltip_AddColoredLine(GameTooltip, BONUS_OBJECTIVE_TIME_LEFT:format(timeString), timeColor);
+	elseif questInfo:IsBonusObjective() and timeString then
+		GameTooltip_AddColoredLine(GameTooltip, timeString, timeColor);
 	end
 
 	if (not style.hideObjectives) then
