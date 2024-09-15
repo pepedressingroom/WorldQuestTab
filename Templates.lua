@@ -402,7 +402,7 @@ function WQT_Utils:GetQuestTimeString(questInfo, fullString, unabreviated)
 	timeLeftSeconds =  C_TaskQuest.GetQuestTimeLeftSeconds(questInfo.questId) or 0;
 
 	local isBonus = questInfo:IsBonusObjective();
-	local widgetText = "";
+	local widgetText = nil;
 	-- Bonus world quest have their time on a widget
 	if isBonus then
 		local widgetSetID = C_TaskQuest.GetQuestTooltipUIWidgetSet(questInfo.questId);
@@ -469,6 +469,14 @@ function WQT_Utils:GetQuestTimeString(questInfo, fullString, unabreviated)
 				category = _V["TIME_REMAINING_CATEGORY"].long;
 			end
 		end
+
+		if isBonus then
+			timeString = SecondsToTime(displayTime, false, unabreviated);
+		end
+	end
+
+	if timeLeftSeconds == 0 and widgetText then
+		timeString = widgetText; -- Better than nothing?
 	end
 	-- start with default, for CN and KR
 	timeStringShort = timeString;
@@ -476,11 +484,6 @@ function WQT_Utils:GetQuestTimeString(questInfo, fullString, unabreviated)
 	if t and str then
 		timeStringShort = t..str;
 	end
-	if isBonus and widgetText then
-		timeString = widgetText;
-		category = _V["TIME_REMAINING_CATEGORY"].critical;
-	end
-	
 	return timeLeftSeconds, timeString, color, timeStringShort, timeLeftMinutes, category;
 end
 
