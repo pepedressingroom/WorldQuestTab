@@ -1614,6 +1614,12 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.5",
+			["intro"] = { "Update for 11.0.5" },
+			["fixes"] = {
+				"Fixed alot of lua errors.",
+			},
+		},
 		{["version"] = "11.0.2.13",
 			["fixes"] = {
 				"World quests of City of Threads on Azj-Kahet now displays correctly.",
