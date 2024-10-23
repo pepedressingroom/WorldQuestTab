@@ -40,38 +40,38 @@ local _settings = {
 }
 
 local function QuestListChangedHook(event, ...)
-	local questId, added = ...;
+	local questID, added = ...;
 	-- We don't have settings (yet?)
 	if (not _activeSettings) then return; end
 	
 	-- Update TomTom arrows when quests change. Might be new that needs tracking or completed that needs removing
 	local autoArrow = _activeSettings.TomTomAutoArrow;
 	local clickArrow = _activeSettings.TomTomArrowOnClick;
-	if (questId and TomTom and _activeSettings.useTomTom and (clickArrow or autoArrow) and QuestUtils_IsQuestWorldQuest(questId)) then
+	if (questID and TomTom and _activeSettings.useTomTom and (clickArrow or autoArrow) and QuestUtils_IsQuestWorldQuest(questID)) then
 		
 		if (added) then
-			local questHardWatched = WQT_Utils:QuestIsWatchedManual(questId);
+			local questHardWatched = WQT_Utils:QuestIsWatchedManual(questID);
 			if (clickArrow or questHardWatched) then
-				WQT_Utils:AddTomTomArrowByQuestId(questId);
+				WQT_Utils:AddTomTomArrowByQuestId(questID);
 				--If click arrow is active, we want to clear the previous click arrow
 				if (clickArrow and WQT_WorldQuestFrame.softTomTomArrow and not WQT_Utils:QuestIsWatchedManual(WQT_WorldQuestFrame.softTomTomArrow)) then
 					WQT_Utils:RemoveTomTomArrowbyQuestId(WQT_WorldQuestFrame.softTomTomArrow);
 				end
 				
 				if (clickArrow and not questHardWatched) then
-					WQT_WorldQuestFrame.softTomTomArrow = questId;
+					WQT_WorldQuestFrame.softTomTomArrow = questID;
 				end
 			end
 			
 		else
-			WQT_Utils:RemoveTomTomArrowbyQuestId(questId)
+			WQT_Utils:RemoveTomTomArrowbyQuestId(questID)
 		end
 	end
 end
 
 local function TrackDropDownHook(owner, rootDescription)
 	local questInfo = owner.questInfo;
-	local questID = questInfo.questId;
+	local questID = questInfo.questID;
 	local zoneId = C_TaskQuest.GetQuestZoneID(questID);
 	local x, y = C_TaskQuest.GetQuestLocation(questID, zoneId)
 	local title = C_TaskQuest.GetQuestInfoByQuestID(questID);
@@ -105,7 +105,7 @@ function TomTomExternal:Init(utils)
 	_activeSettings = WQT_Utils:RegisterExternalSettings("TomTom", _defaultSettings);
 	WQT_Utils:AddExternalSettingsOptions(_settings);
 	-- Remove point on quest complete
-	WQT_WorldQuestFrame:RegisterCallback("WorldQuestCompleted", function(questId) WQT_Utils:RemoveTomTomArrowbyQuestId(questId) end);
+	WQT_WorldQuestFrame:RegisterCallback("WorldQuestCompleted", function(questID) WQT_Utils:RemoveTomTomArrowbyQuestId(questID) end);
 	WQT_WorldQuestFrame:RegisterCallback("InitTrackDropDown", TrackDropDownHook);
 	-- Hook onto Blizzard's events
 	WQT_WorldQuestFrame:HookEvent("QUEST_WATCH_LIST_CHANGED", QuestListChangedHook);

@@ -69,11 +69,11 @@ function WQT:AddDebugToTooltip(tooltip, questInfo, level)
 		end
 	end
 	
-	if(level == 0 and questInfo.questId) then
+	if(level == 0 and questInfo.questID) then
 		color = GRAY_FONT_COLOR;
 		
 		AddIndentedDoubleLine(tooltip, "Through functions:", "", 0, color);
-		local title, factionId = C_TaskQuest.GetQuestInfoByQuestID(questInfo.questId);
+		local title, factionId = C_TaskQuest.GetQuestInfoByQuestID(questInfo.questID);
 		AddIndentedDoubleLine(tooltip, "title", title, 1, color);
 		-- Time
 		local seconds, timeString, timeColor, timeStringShort = WQT_Utils:GetQuestTimeString(questInfo, true, true);
@@ -92,7 +92,7 @@ function WQT:AddDebugToTooltip(tooltip, questInfo, level)
 		AddIndentedDoubleLine(tooltip, "texture", factionInfo.texture, 2, color);
 		AddIndentedDoubleLine(tooltip, "expansion", factionInfo.expansion, 2, color);
 		-- MapInfo
-		local mapInfo = WQT_Utils:GetMapInfoForQuest(questInfo.questId);
+		local mapInfo = WQT_Utils:GetMapInfoForQuest(questInfo.questID);
 		AddIndentedDoubleLine(tooltip, "mapInfo", "", 1, color);
 		AddIndentedDoubleLine(tooltip, "name", mapInfo.name, 2, color);
 		AddIndentedDoubleLine(tooltip, "mapID", mapInfo.mapID, 2, color);
@@ -158,9 +158,9 @@ local function GetWorldQuestDump()
 	
 	local list = WQT_WorldQuestFrame.dataProvider:GetIterativeList();
 	for k, questInfo in ipairs(list) do
-		local title = C_TaskQuest.GetQuestInfoByQuestID(questInfo.questId);
-		local mapInfo = WQT_Utils:GetMapInfoForQuest(questInfo.questId)
-		output = FORMAT_WORLDQUEST:format(output, questInfo.questId, mapInfo.mapID, bts(questInfo.passedFilter), bts(questInfo.isValid), bts(questInfo.alwaysHide), bts(questInfo.isDaily), bts(questInfo.isAllyQuest), questInfo.time.seconds, questInfo.reward.typeBits);
+		local title = C_TaskQuest.GetQuestInfoByQuestID(questInfo.questID);
+		local mapInfo = WQT_Utils:GetMapInfoForQuest(questInfo.questID)
+		output = FORMAT_WORLDQUEST:format(output, questInfo.questID, mapInfo.mapID, bts(questInfo.passedFilter), bts(questInfo.isValid), bts(questInfo.alwaysHide), bts(questInfo.isDaily), bts(questInfo.isAllyQuest), questInfo.time.seconds, questInfo.reward.typeBits);
 	end
 	
 	return output;
