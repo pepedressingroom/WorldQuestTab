@@ -1186,10 +1186,10 @@ _V["SORT_FUNCTIONS"] = {
 				local aType = a:GetRewardType();
 				local bType = b:GetRewardType();
 				local bonus = C_PvP.GetWarModeRewardBonus() / 100;
-				if (_V["WARMODE_BONUS_REWARD_TYPES"][aType] and C_QuestLog.QuestHasWarModeBonus(a.questId)) then
+				if (_V["WARMODE_BONUS_REWARD_TYPES"][aType] and C_QuestLog.QuestHasWarModeBonus(a.questID)) then
 					amountA = amountA + floor(amountA * bonus);
 				end
-				if (_V["WARMODE_BONUS_REWARD_TYPES"][bType] and C_QuestLog.QuestHasWarModeBonus(b.questId)) then
+				if (_V["WARMODE_BONUS_REWARD_TYPES"][bType] and C_QuestLog.QuestHasWarModeBonus(b.questID)) then
 					amountB = amountB + floor(amountB * bonus);
 				end
 			end
@@ -1206,8 +1206,8 @@ _V["SORT_FUNCTIONS"] = {
 			end 
 		end
 	,["faction"] = function(a, b) 
-			local _, factionIdA = C_TaskQuest.GetQuestInfoByQuestID(a.questId);
-			local _, factionIdB = C_TaskQuest.GetQuestInfoByQuestID(b.questId);
+			local _, factionIdA = C_TaskQuest.GetQuestInfoByQuestID(a.questID);
+			local _, factionIdB = C_TaskQuest.GetQuestInfoByQuestID(b.questID);
 			if (factionIdA ~= factionIdB) then 
 				local factionA = WQT_Utils:GetFactionDataInternal(factionIdA);
 				local factionB = WQT_Utils:GetFactionDataInternal(factionIdB);
@@ -1236,8 +1236,8 @@ _V["SORT_FUNCTIONS"] = {
 			end 
 		end
 	,["title"] = function(a, b)
-			local titleA = C_TaskQuest.GetQuestInfoByQuestID(a.questId);
-			local titleB = C_TaskQuest.GetQuestInfoByQuestID(b.questId);
+			local titleA = C_TaskQuest.GetQuestInfoByQuestID(a.questID);
+			local titleB = C_TaskQuest.GetQuestInfoByQuestID(b.questID);
 			if (titleA ~= titleB) then 
 				return titleA < titleB;
 			end 
@@ -1257,8 +1257,8 @@ _V["SORT_FUNCTIONS"] = {
 			if (aIsCriteria ~= bIsCriteria) then return aIsCriteria and not bIsCriteria; end 
 		end
 	,["zone"] = function(a, b) 
-			local mapInfoA = WQT_Utils:GetMapInfoForQuest(a.questId);
-			local mapInfoB = WQT_Utils:GetMapInfoForQuest(b.questId);
+			local mapInfoA = WQT_Utils:GetMapInfoForQuest(a.questID);
+			local mapInfoB = WQT_Utils:GetMapInfoForQuest(b.questID);
 			if (mapInfoA and mapInfoA.name and mapInfoB and mapInfoB.name and mapInfoA.mapID ~= mapInfoB.mapID) then 
 				if (WQT.settings.list.alwaysAllQuests and (mapInfoA.mapID == WorldMapFrame.mapID or mapInfoB.mapID == WorldMapFrame.mapID)) then 
 					return mapInfoA.mapID == WorldMapFrame.mapID and mapInfoB.mapID ~= WorldMapFrame.mapID;
@@ -1300,7 +1300,7 @@ _V["FILTER_FUNCTIONS"] = {
 			,["Elite"]		= function(questInfo, tagInfo) return tagInfo and tagInfo.isElite and tagInfo.worldQuestType ~= Enum.QuestTagType.Dungeon; end
 			,["Default"]	= function(questInfo, tagInfo) return tagInfo and ((not tagInfo.isElite and tagInfo.worldQuestType == Enum.QuestTagType.Normal) or tagInfo.worldQuestType == Enum.QuestTagType.CovenantCalling); end 
 			,["Daily"]		= function(questInfo, tagInfo) return questInfo.isDaily; end 
-			,["Threat"]		= function(questInfo, tagInfo) return C_QuestLog.IsThreatQuest(questInfo.questId); end 
+			,["Threat"]		= function(questInfo, tagInfo) return C_QuestLog.IsThreatQuest(questInfo.questID); end 
 			,["Bonus"]		= function(questInfo, tagInfo) return not tagInfo; end
 			,["Skyriding"]	= function(questInfo, tagInfo) return tagInfo and tagInfo.worldQuestType == Enum.QuestTagType.DragonRiderRacing; end
 			}
