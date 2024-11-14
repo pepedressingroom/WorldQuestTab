@@ -2570,11 +2570,13 @@ function WQT_CoreMixin:ShowOverlayFrame(frame)
 	frame:SetFrameLevel(blocker:GetFrameLevel()+1)
 	frame:SetFrameStrata(blocker:GetFrameStrata())
 	frame:Show();
-	
-	--WQT_QuestScrollFrame.DetailFrame:Hide();
-	
+
 	self.manualCloseOverlay = true;
-	
+
+	-- Hide little gear icon
+	self.SettingsButton:Hide();
+	QuestMapFrame.SettingsDropdown:Hide();
+
 	-- Hide quest and filter to prevent bleeding through when walking around
 	WQT_QuestScrollFrame:Hide();
 end
@@ -2585,10 +2587,12 @@ function WQT_CoreMixin:HideOverlayFrame()
 	self:SetCustomEnabled(true);
 	blocker:Hide();
 	blocker.CurrentOverlayFrame:Hide();
-	--WQT_QuestScrollFrame.DetailFrame:Show();
-	
 	blocker.CurrentOverlayFrame = nil;
-	
+
+	-- Show little gear icon
+	self.SettingsButton:Show();
+	QuestMapFrame.SettingsDropdown:Show();
+
 	-- Show everything again
 	WQT_QuestScrollFrame:Show();
 end
