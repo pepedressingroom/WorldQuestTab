@@ -1626,6 +1626,11 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.5.2",
+			["fixes"] = {
+				"Fixed messy display of Vol'dun world quests (again).",
+			},
+		},
 		{["version"] = "11.0.5.1",
 			["new"] = {
 				"Added new pin option to show a label with reward amounts (gold, item level, reputation, etc).",
