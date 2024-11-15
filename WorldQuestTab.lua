@@ -600,6 +600,11 @@ local function ConvertOldSettings(version)
 		WQT.db.global.pin.showWarbandBonus = true;
 		WQT.db.global.list.showWarbandBonus = true;
 	end
+
+	if (version < "11.0.5.1") then
+		-- Add new pin option
+		WQT.db.global.pin.optionalLabel = _V["OPTIONAL_LABEL_TYPES"].none;
+	end
 end
 
 -- Display an indicator on the filter if some official map filters might hide quest

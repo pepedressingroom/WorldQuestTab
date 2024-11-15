@@ -508,6 +508,18 @@ _V["RING_TYPES_LABELS"] ={
 	,[_V["RING_TYPES"].rarity] = {["label"] = RARITY, ["tooltip"] = _L["PIN_RING_QUALITY_TT"]}
 }
 
+_V["OPTIONAL_LABEL_TYPES"] = {
+	["none"] = 1
+	,["time"] = 2
+	,["amount"] = 3
+}
+
+_V["OPTIONAL_LABEL_LABELS"] ={
+	[_V["OPTIONAL_LABEL_TYPES"].none] = {["label"] = NONE, ["tooltip"] = _L["PIN_OPTIONAL_NONE_TT"]} 
+	,[_V["OPTIONAL_LABEL_TYPES"].time] = {["label"] = _L["PIN_RING_TIME"], ["tooltip"] = _L["PIN_TIME_TT"]}
+	,[_V["OPTIONAL_LABEL_TYPES"].amount] = {["label"] = _L["PIN_OPTIONAL_AMOUNT"], ["tooltip"] = _L["PIN_OPTIONAL_AMOUNT_TT"]}
+}
+
 _V["ENUM_PIN_CONTINENT"] = {
 	["none"] = 1
 	,["tracked"] = 2
@@ -970,14 +982,6 @@ _V["SETTING_LIST"] = {
 			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
 			}		
 	
-	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_TIME"], ["tooltip"] = _L["PIN_TIME_TT"]
-			, ["valueChangedFunc"] = function(value) 
-				WQT.settings.pin.timeLabel  = value;
-				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
-			end
-			,["getValueFunc"] = function() return WQT.settings.pin.timeLabel  end
-			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
-			}		
 	,{["template"] = "WQT_SettingCheckboxTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_ELITE_RING"], ["tooltip"] = _L["PIN_ELITE_RING_TT"]
 			, ["valueChangedFunc"] = function(value) 
 				WQT.settings.pin.eliteRing  = value;
@@ -1008,6 +1012,14 @@ _V["SETTING_LIST"] = {
 				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
 			end
 			,["getValueFunc"] = function() return WQT.settings.pin.ringType end
+			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
+			}	
+	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_OPTIONAL_LABEL"], ["tooltip"] = _L["PIN_OPTIONAL_LABEL_TT"], ["options"] = _V["OPTIONAL_LABEL_LABELS"], ["isNew"] = true
+			, ["valueChangedFunc"] = function(value) 
+				WQT.settings.pin.optionalLabel = value;
+				WQT_WorldQuestFrame.pinDataProvider:RefreshAllData();
+			end
+			,["getValueFunc"] = function() return WQT.settings.pin.optionalLabel end
 			,["isDisabled"] = function() return WQT.settings.pin.disablePoI end
 			}	
 	,{["template"] = "WQT_SettingDropDownTemplate", ["categoryID"] = "MAPPINS", ["label"] = _L["PIN_VISIBILITY_ZONE"], ["tooltip"] = _L["PIN_VISIBILITY_ZONE_TT"], ["options"] = _V["PIN_VISIBILITY_ZONE"]
@@ -1582,7 +1594,7 @@ _V["WQT_DEFAULTS"] = {
 			filterPoI = true;
 			scale = 1;
 			disablePoI = false;
-			timeLabel = false;
+			optionalLabel = 1;
 			continentPins = false;
 			fadeOnPing = true;
 			eliteRing = false;
@@ -1614,6 +1626,14 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.5.1",
+			["new"] = {
+				"Added new pin option to show a label with reward amounts (gold, item level, reputation, etc).",
+			},
+			["changes"] = {
+				"Moved close button.",
+			},
+		},
 		{["version"] = "11.0.5",
 			["intro"] = { "Update for 11.0.5" },
 			["fixes"] = {
