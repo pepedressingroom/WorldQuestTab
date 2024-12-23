@@ -1915,11 +1915,11 @@ function WQT_CoreMixin:OnLoad()
 	self.variables = addon.variables;
 
 	-- Add utilities options to the settings if it's installed but not enabled
-	if (_utilitiesInstalled) then
+	--[[if (_utilitiesInstalled) then
 		for k, setting in ipairs(_V["SETTING_UTILITIES_LIST"]) do
 			tinsert(_V["SETTING_LIST"], setting);
 		end
-	end
+	end]]
 
 	-- Quest Dataprovider
 	self.dataProvider = CreateAndInitFromMixin(WQT_DataProvider);

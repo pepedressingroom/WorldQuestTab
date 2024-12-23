@@ -740,8 +740,16 @@ function WQT_DataProvider:AddQuest(qInfo)
 	end
 	
 	local questInfo = self.pool:Acquire();
+
+	-- MapUtil.ShouldShowTask always returns false if the quest is in progress.
+	-- This hides the current quest and some other stuff
 	local alwaysHide = not MapUtil.ShouldShowTask(qInfo.mapID, qInfo);
-	
+
+	-- If the world quest is in progress do not hide it.
+	if qInfo.isQuestStart and qInfo.inProgress then
+		alwaysHide = false;
+	end
+
 	-- Dragonflight devs forgot to flagged some tech quests with "MapUtil.ShouldShowTask", and past it in Vol'dun location.
 	-- It make Vol'dun's map messy. This should fix it.
 	if (qInfo.questID > 60000) and (qInfo.mapID == 864) then alwaysHide = true; end

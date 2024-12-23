@@ -155,6 +155,8 @@ local WQT_WAR_WITHIN = {
 	[2213] =  {["x"] = 0.44, ["y"] = 0.73}, -- City of Threads
 	-- [2216] =  {["x"] = 0.44, ["y"] = 0.73}, -- City of Threads - Lower
 	[2339] =  {["x"] = 0.73, ["y"] = 0.25}, -- Dornogal
+	-- For some reason the Siren Isle is inside the Isle of Dorn map...
+	[2369] =  {["x"] = 0.76, ["y"] = 0.21}, -- Siren Isle
 }
 local WQT_DRAGONFLIGHT = {
 	[2026] =  {["x"] = 0.66, ["y"] = 0.09}, -- Forbidden Reach (dracthyr start)
@@ -316,6 +318,7 @@ local ZonesByExpansion = {
 		2248, -- Isle of Dorn
 		2255, -- Azj-Kahet
 		2256, -- Azj-Kahet - Lower
+		2369, -- Siren Isle
 	}
 	,[LE_EXPANSION_DRAGONFLIGHT] = {
 		1978, -- Dragon Isles
@@ -1626,6 +1629,17 @@ end
 
 -- This is just easier to maintain than changing the entire string every time
 _V["PATCH_NOTES"] = {
+		{["version"] = "11.0.7.1",
+			["new"] = {
+				"Added Siren Isle.",
+			},
+			["fixes"] = {
+				"Fixed error with incompatible utilities AddOn.",
+			},
+			["changes"] = {
+				"Testing a change in how world quests are hidden or shown. Active world quest pin should be visible now...",
+			},
+		},
 		{["version"] = "11.0.7",
 			["intro"] = { "Update for 11.0.7." },
 		},
